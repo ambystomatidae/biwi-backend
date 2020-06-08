@@ -6,5 +6,5 @@ import javax.persistence.Entity;
 
 @Entity
 public class Image extends PanacheEntity {
-    public byte[] content;
+    private byte[] content;
 }

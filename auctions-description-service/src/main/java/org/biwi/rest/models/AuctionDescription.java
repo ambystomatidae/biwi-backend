@@ -2,29 +2,27 @@ package org.biwi.rest.models;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
 @Entity
 public class AuctionDescription extends PanacheEntity implements ShortDescription {
-    public String auctionId;
-    public String name;
-    public double startingPrice;
-    public double reservePrice;
-    public String description;
-    public LocalDateTime beginDate;
-    public LocalTime duration;
+    @Column(unique = true)
+    private String auctionId;
+    private String name;
+    private double startingPrice;
+    private double reservePrice;
+    private String description;
+    private LocalDateTime beginDate;
+    private LocalTime duration;
     @OneToMany
-    public List<Image> images;
+    private List<Image> images;
     @OneToOne
-    public Image mainImage;
+    private Image mainImage;
     @ElementCollection
-    public List<String> categories;
+    private List<String> categories;
 
     @Override
     public String getName() {
@@ -44,5 +42,53 @@ public class AuctionDescription extends PanacheEntity implements ShortDescriptio
     @Override
     public Image getMainImage() {
         return this.mainImage;
+    }
+
+    public String getAuctionId() {
+        return auctionId;
+    }
+
+    public void setAuctionId(String auctionId) {
+        this.auctionId = auctionId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalTime getDuration() {
+        return duration;
+    }
+
+    public void setDuration(LocalTime duration) {
+        this.duration = duration;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
+
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
+
+    public double getReservePrice() {
+        return reservePrice;
+    }
+
+    public void setReservePrice(double reservePrice) {
+        this.reservePrice = reservePrice;
     }
 }
