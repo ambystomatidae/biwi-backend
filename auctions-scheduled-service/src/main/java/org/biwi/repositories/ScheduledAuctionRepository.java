@@ -47,7 +47,8 @@ public class ScheduledAuctionRepository implements PanacheRepository<ScheduledAu
     public List<ScheduledAuction> getStartingSoon(int range, int limit) {
         LocalDateTime endFilter = LocalDateTime.now()
                 .plusHours(range);
-        PanacheQuery<ScheduledAuction> query = find("from ScheduledAuction where beginDate < ?1", Sort.by("beginDate"), endFilter);
+        LocalDateTime startFilter = LocalDateTime.now();
+        PanacheQuery<ScheduledAuction> query = find("from ScheduledAuction where beginDate < ?1 and beginDate > ?2", Sort.by("beginDate"), endFilter, startFilter);
         return query.page(Page.ofSize(limit)).list();
     }
 }

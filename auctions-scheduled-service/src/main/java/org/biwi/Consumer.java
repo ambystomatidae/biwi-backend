@@ -36,7 +36,7 @@ public class Consumer implements Runnable{
     public void run() {
         try {
             JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE);
-            JMSConsumer consumer = context.createConsumer(context.createQueue("awesomequeue"));
+            JMSConsumer consumer = context.createConsumer(context.createQueue("activateAuction"));
             while(true) {
                 Message msg = consumer.receive();
                 if (msg == null) return;

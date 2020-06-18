@@ -1,5 +1,6 @@
 package org.biwi;
 
+import org.biwi.models.ScheduleAuctionEvent;
 import org.biwi.models.ScheduledAuction;
 import org.biwi.models.StartingSoonRequestObject;
 import org.biwi.repositories.ScheduledAuctionRepository;
@@ -15,7 +16,10 @@ import java.util.List;
 public class ScheduledResource {
 
     @Inject
-    private ScheduledAuctionRepository repository;
+    ScheduledAuctionRepository repository;
+
+    @Inject
+    EventProducer producer;
 
     @POST
     @Path("schedule")
@@ -28,10 +32,14 @@ public class ScheduledResource {
             // duplicate key
             return Response.status(403).build();
         }
-        // produce scheduled message here TODO
+        producer.produce(new ScheduleAuctionEvent(auc), auc.getBeginDate());
         return Response.ok(auc).build();
     }
 
+    /**
+     * @param soon Contains limit of scheduledauctions to return, and the temporal range
+     * @return List<ScheduledAuction> (may be empty)
+     */
     @GET
     @Path("soon")
     @Produces(MediaType.APPLICATION_JSON)
