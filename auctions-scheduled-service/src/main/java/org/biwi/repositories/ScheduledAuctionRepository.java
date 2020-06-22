@@ -51,4 +51,15 @@ public class ScheduledAuctionRepository implements PanacheRepository<ScheduledAu
         PanacheQuery<ScheduledAuction> query = find("from ScheduledAuction where beginDate < ?1 and beginDate > ?2", Sort.by("beginDate"), endFilter, startFilter);
         return query.page(Page.ofSize(limit)).list();
     }
+
+    /**
+     * @param pageSize number of results returned
+     * @param page if there are more results than pageSize, gets the page-th page.
+     * @return List of scheduled auctions that meet given criteria
+     */
+    public List<ScheduledAuction> getAll(int pageSize, int page) {
+        LocalDateTime startFilter = LocalDateTime.now();
+        PanacheQuery<ScheduledAuction> query = find("from ScheduledAuction where beginDate > ?1", Sort.by("beginDate"), startFilter);
+        return query.page(Page.of(page, pageSize)).list();
+    }
 }
