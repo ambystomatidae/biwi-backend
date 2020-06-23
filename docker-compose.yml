@@ -6,10 +6,12 @@ services:
     environment: 
       - ARTEMIS_USERNAME=quarkus
       - ARTEMIS_PASSWORD=quarkus
+      - ENABLE_JMX_EXPORTER=true
     ports: 
       - "8161:8161"
       - "61616:61616"
       - "5672:5672"
+      - "9404:9404" #prometheus exporter
     networks: 
       - biwi-net
   scheduleddb:
@@ -22,7 +24,45 @@ services:
       - "5433:5432"
     networks:
       - biwi-net
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+    environment:
+      - node.name=es01
+      - cluster.name=es-biwi
+      - cluster.initial_master_nodes=es01
+    volumes:
+      - eldata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - biwi-net
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.8.0
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elastic:9200
+      - SERVER_NAME=biwi-kibana
+    ports:
+      - "5601:5601"
+    networks:
+      - biwi-net
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5601" ]
+      interval: 5s
+      timeout: 15s
+      retries: 1
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:7.8.0
+    volumes:
+      - ./metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+    networks:
+      - biwi-net
+    depends_on:
+      - broker
+      - kibana
 
 networks:
   biwi-net:
     driver: bridge
+
+volumes:
+  eldata:
