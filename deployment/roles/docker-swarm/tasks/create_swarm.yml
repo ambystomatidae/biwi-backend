@@ -1,0 +1,14 @@
+---
+- name: Init a new swarm
+  docker_swarm:
+    state: present
+    advertise_addr: "{{ hostvars[inventory_hostname].ansible_enp0s8.ipv4.address }}"
+  register: swarm_info
+- name: Create an Overlay network
+  docker_network:
+    name: "{{ network_name }}"
+    driver: overlay
+    scope: swarm
+    attachable: yes
+    ipam_config:
+      - subnet: 10.10.10.0/24
