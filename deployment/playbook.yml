@@ -3,6 +3,13 @@
   become: yes
   roles:
     - docker
+  tasks:
+    - name: Increase vm.max_map_count
+      sysctl:
+        name: vm.max_map_count
+        value: '262144'
+        sysctl_set: yes
+        state: present
 
 - hosts: machine-1
   become: yes
@@ -22,3 +29,9 @@
       vars:
         create: 'false'
         type: 'worker'
+
+- hosts:
+  - machine-1
+  become: yes
+  roles:
+    - monitoring

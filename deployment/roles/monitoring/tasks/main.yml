@@ -1,0 +1,24 @@
+---
+- name: Setup label to deploy to a fixed machine
+  docker_node:
+    hostname: 'machine-3'
+    labels:
+      elastic: 'true'
+- name: Start Elasticsearch service
+  docker_swarm_service:
+    name: elastic
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+    state: present
+    placement:
+      constraints:
+        - node.labels.elastic == true
+    mounts:
+      - type: volume
+        source: 'elastic-vol'
+        target: '/usr/share/elasticsearch/data'
+    env:
+      node.name: es01
+      cluster.name: es-biwi
+      cluster.initial_master_nodes: es01
+    networks:
+      - biwi-net
