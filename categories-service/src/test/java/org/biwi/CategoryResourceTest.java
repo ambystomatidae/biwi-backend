@@ -13,11 +13,12 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.greaterThan;
 
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CategoryResourceTest {
-    static Category c = new Category("Desporto");
+    static Category c = new Category(-1, "Desporto");
 
     @Test
     @Order(1)
@@ -40,7 +41,7 @@ public class CategoryResourceTest {
     @Order(2)
     public void testGetEndpoint() {
         given()
-                .pathParam("id", c.id)
+                .pathParam("id", c.getId())
                 .when().get("/v1/categories/{id}")
                 .then()
                 .statusCode(200)
@@ -54,7 +55,7 @@ public class CategoryResourceTest {
                 .when().get("/v1/categories/")
                 .then()
                 .statusCode(200)
-                .body("size()", is(1));
+                .body("size()", greaterThan(0));
     }
 
     @Test
@@ -66,7 +67,7 @@ public class CategoryResourceTest {
         given()
                 .contentType("application/json")
                 .body(data)
-                .pathParam("id", c.id)
+                .pathParam("id", c.getId())
                 .when().put("/v1/categories/{id}")
                 .then()
                 .statusCode(200)
@@ -77,7 +78,7 @@ public class CategoryResourceTest {
     @Order(5)
     public void testDeleteEndpoint() {
         given()
-                .pathParam("id", c.id)
+                .pathParam("id", c.getId())
                 .when().delete("/v1/categories/{id}")
                 .then()
                 .statusCode(204);
