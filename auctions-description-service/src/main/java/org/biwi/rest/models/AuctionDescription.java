@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Entity
-public class AuctionDescription extends PanacheEntity implements ShortDescription {
+public class AuctionDescription extends PanacheEntity {
     @Column(unique = true)
     private String auctionId;
     private String name;
@@ -17,32 +17,12 @@ public class AuctionDescription extends PanacheEntity implements ShortDescriptio
     private String description;
     private LocalDateTime beginDate;
     private LocalTime duration;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Image> images;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Image mainImage;
     @ElementCollection
     private List<String> categories;
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public double getStartingPrice() {
-        return this.startingPrice;
-    }
-
-    @Override
-    public LocalDateTime getBeginDate() {
-        return this.beginDate;
-    }
-
-    @Override
-    public Image getMainImage() {
-        return this.mainImage;
-    }
 
     public String getAuctionId() {
         return auctionId;
@@ -52,12 +32,44 @@ public class AuctionDescription extends PanacheEntity implements ShortDescriptio
         this.auctionId = auctionId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getStartingPrice() {
+        return startingPrice;
+    }
+
+    public void setStartingPrice(double startingPrice) {
+        this.startingPrice = startingPrice;
+    }
+
+    public double getReservePrice() {
+        return reservePrice;
+    }
+
+    public void setReservePrice(double reservePrice) {
+        this.reservePrice = reservePrice;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getBeginDate() {
+        return beginDate;
+    }
+
+    public void setBeginDate(LocalDateTime beginDate) {
+        this.beginDate = beginDate;
     }
 
     public LocalTime getDuration() {
@@ -76,19 +88,19 @@ public class AuctionDescription extends PanacheEntity implements ShortDescriptio
         this.images = images;
     }
 
+    public Image getMainImage() {
+        return mainImage;
+    }
+
+    public void setMainImage(Image mainImage) {
+        this.mainImage = mainImage;
+    }
+
     public List<String> getCategories() {
         return categories;
     }
 
     public void setCategories(List<String> categories) {
         this.categories = categories;
-    }
-
-    public double getReservePrice() {
-        return reservePrice;
-    }
-
-    public void setReservePrice(double reservePrice) {
-        this.reservePrice = reservePrice;
     }
 }
