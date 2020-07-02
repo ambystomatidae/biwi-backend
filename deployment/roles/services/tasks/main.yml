@@ -1,0 +1,26 @@
+---
+- name: Setup database
+  docker_swarm_service:
+    name: db
+    image: postgres
+    env:
+      POSTGRES_PASSWORD: hibernate
+      POSTGRES_USER: hibernate
+      POSTGRES_DB: biwidesc
+    mounts:
+      - type: volume
+        source: 'db-vol'
+        target: '/usr/lib/postgresql/data'
+    networks:
+      - biwi-net
+
+- name: Setup auctions-description-service
+  docker_swarm_service:
+    name: auctions-description-service
+    image: ambystomatidae/biwi-auctions-description-service
+    publish:
+      - published_port: 10000
+        target_port: 8080
+    networks:
+      - biwi-net
+    force_update: true

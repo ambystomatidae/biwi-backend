@@ -1,21 +1,29 @@
 package org.biwi.rest.models;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class AuctionDescription extends PanacheEntity {
-    @Column(unique = true)
+public class AuctionDescription extends PanacheEntityBase {
+    @Id
     private String auctionId;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private double startingPrice;
+    @Column(nullable = false)
     private double reservePrice;
+    @Column(nullable = false)
     private String description;
+    @Column(nullable = false)
     private LocalDateTime beginDate;
+    @Column(nullable = false)
     private LocalTime duration;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Image> images;
@@ -23,6 +31,22 @@ public class AuctionDescription extends PanacheEntity {
     private Image mainImage;
     @ElementCollection
     private List<String> categories;
+    @Column(nullable = false)
+    private String sellerId;
+
+    public AuctionDescription() {
+        this.auctionId = null;
+        this.name = "";
+        this.startingPrice = 0;
+        this.reservePrice = 0;
+        this.description = "";
+        this.beginDate = LocalDateTime.now();
+        this.duration = LocalTime.of(1,0);
+        this.images = new ArrayList<>();
+        this.mainImage = null;
+        this.categories = new ArrayList<>();
+        this.sellerId = null;
+    }
 
     public String getAuctionId() {
         return auctionId;
@@ -102,5 +126,13 @@ public class AuctionDescription extends PanacheEntity {
 
     public void setCategories(List<String> categories) {
         this.categories = categories;
+    }
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
     }
 }
