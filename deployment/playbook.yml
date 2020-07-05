@@ -30,6 +30,18 @@
         create: 'false'
         type: 'worker'
 
+- hosts: all
+  become: yes
+  tasks:
+    - name: Create directory structure
+      file:
+        path: /opt/metricbeat
+        state: directory
+        mode: u=r
+    - name: Copy metricbeat configuration file to all hosts
+      template:
+        src: "roles/monitoring/templates/metricbeat.yml.j2"
+        dest: "/opt/metricbeat/metricbeat.yml"
 - hosts:
   - machine-1
   become: yes

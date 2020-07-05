@@ -15,7 +15,7 @@ public class AllStartingRequestObject {
         this.pageSize = 10;
     }
 
-    public AllStartingRequestObject(int limit, int pageSize, int page) {
+    public AllStartingRequestObject(int pageSize, int page) {
         this.pageSize = pageSize;
         this.page = page;
     }

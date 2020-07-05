@@ -6,9 +6,9 @@ public class ShortDescription {
     private String name;
     private double startingPrice;
     private LocalDateTime beginDate;
-    private Image mainImage;
+    private String mainImage;
 
-    public ShortDescription(String name, double startingPrice, LocalDateTime beginDate, Image mainImage) {
+    public ShortDescription(String name, double startingPrice, LocalDateTime beginDate, String mainImage) {
         this.name = name;
         this.startingPrice = startingPrice;
         this.beginDate = beginDate;
@@ -46,11 +46,11 @@ public class ShortDescription {
         this.beginDate = beginDate;
     }
 
-    public Image getMainImage() {
+    public String getMainImage() {
         return mainImage;
     }
 
-    public void setMainImage(Image mainImage) {
+    public void setMainImage(String mainImage) {
         this.mainImage = mainImage;
     }
 }

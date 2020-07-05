@@ -1,19 +1,18 @@
 package org.biwi.models;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
-public class ScheduledAuction extends PanacheEntity {
-    @Column(unique = true)
+@Table(indexes = {
+        @Index(name = "begin_date_idx", columnList = "begindate")
+})
+public class ScheduledAuction extends PanacheEntityBase {
+    @Id
     private String auctionId;
-    private double startingPrice;
-    private double reservePrice;
-    private LocalTime duration;
+    @Column(name = "begindate")
     private LocalDateTime beginDate;
 
     public String getAuctionId() {
@@ -22,30 +21,6 @@ public class ScheduledAuction extends PanacheEntity {
 
     public void setAuctionId(String auctionId) {
         this.auctionId = auctionId;
-    }
-
-    public double getStartingPrice() {
-        return startingPrice;
-    }
-
-    public void setStartingPrice(double startingPrice) {
-        this.startingPrice = startingPrice;
-    }
-
-    public double getReservePrice() {
-        return reservePrice;
-    }
-
-    public void setReservePrice(double reservePrice) {
-        this.reservePrice = reservePrice;
-    }
-
-    public LocalTime getDuration() {
-        return duration;
-    }
-
-    public void setDuration(LocalTime duration) {
-        this.duration = duration;
     }
 
     public LocalDateTime getBeginDate() {

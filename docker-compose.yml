@@ -21,7 +21,7 @@ services:
       - POSTGRES_USER=scheduled
       - POSTGRES_DB=scheduleddb
     ports:
-      - "5433:5432"
+      - "5434:5432"
     networks:
       - biwi-net
   elastic:

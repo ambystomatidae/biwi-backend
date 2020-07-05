@@ -6,13 +6,12 @@ import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
 import org.biwi.models.ScheduledAuction;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
-@ApplicationScoped
+@RequestScoped
 public class ScheduledAuctionRepository implements PanacheRepository<ScheduledAuction> {
 
     /**
@@ -41,15 +40,16 @@ public class ScheduledAuctionRepository implements PanacheRepository<ScheduledAu
 
     /**
      * @param range how soon is considered soon (in hours)
-     * @param limit max number of auctions to return
+     * @param page which page of results to return
+     * @param pageSize how many results should be in each page
      * @return List of auctions matching that criteria
      */
-    public List<ScheduledAuction> getStartingSoon(int range, int limit) {
+    public List<ScheduledAuction> getStartingSoon(int range, int page, int pageSize) {
         LocalDateTime endFilter = LocalDateTime.now()
                 .plusHours(range);
         LocalDateTime startFilter = LocalDateTime.now();
         PanacheQuery<ScheduledAuction> query = find("from ScheduledAuction where beginDate < ?1 and beginDate > ?2", Sort.by("beginDate"), endFilter, startFilter);
-        return query.page(Page.ofSize(limit)).list();
+        return query.page(Page.of(page, pageSize)).list();
     }
 
     /**

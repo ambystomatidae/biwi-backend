@@ -22,3 +22,36 @@
       cluster.initial_master_nodes: es01
     networks:
       - biwi-net
+- name: Start Kibana service
+  docker_swarm_service:
+    name: kibana
+    image: docker.elastic.co/kibana/kibana:7.8.0
+    env:
+      ELASTICSEARCH_HOSTS: http://elastic:9200
+      SERVER_NAME: biwi-kibana
+    publish:
+      - published_port: 5601
+        target_port: 5601
+    networks:
+      - biwi-net
+- name: Start Metricbeat global service
+  docker_swarm_service:
+    name: metricbeat
+    image: docker.elastic.co/beats/metricbeat:7.8.0
+    env:
+      ELASTICSEARCH_HOSTS: http://elastic:9200
+      SERVER_NAME: biwi-kibana
+    mode: global
+    mounts:
+      - source: /opt/metricbeat/metricbeat.yml
+        target: /usr/share/metricbeat/metricbeat.yml
+        type: bind
+      - source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        type: bind
+      - source: /proc
+        target: /hostfs/proc
+        type: bind
+    networks:
+      - biwi-net
+    user: root

@@ -22,6 +22,11 @@ public class ScheduledResource {
     @Inject
     EventProducer producer;
 
+    /**
+     * Schedule an auction to start at a given date
+     * @param auc auctionId and auction StartDate
+     * @return Ok with the scheduling date
+     */
     @POST
     @Path("schedule")
     @Produces(MediaType.APPLICATION_JSON)
@@ -33,7 +38,8 @@ public class ScheduledResource {
             // duplicate key
             return Response.status(403).build();
         }
-        producer.produce(new ScheduleAuctionEvent(auc), auc.getBeginDate());
+        // TODO: Get rest of info from Description service
+        producer.produce(new ScheduleAuctionEvent(), auc.getBeginDate());
         return Response.ok(auc).build();
     }
 
@@ -45,9 +51,10 @@ public class ScheduledResource {
     @Path("soon")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStartingSoon(StartingSoonRequestObject soon) {
-        int limit = soon.getLimit();
         int range = soon.getRange();
-        List<ScheduledAuction> startingSoon = repository.getStartingSoon(range, limit);
+        int page = soon.getPage();
+        int pageSize = soon.getPageSize();
+        List<ScheduledAuction> startingSoon = repository.getStartingSoon(range, page, pageSize);
         return Response.ok(startingSoon).build();
     }
 

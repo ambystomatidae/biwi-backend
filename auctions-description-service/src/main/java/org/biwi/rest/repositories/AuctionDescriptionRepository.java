@@ -3,6 +3,7 @@ package org.biwi.rest.repositories;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import org.biwi.rest.models.AuctionDescription;
 import org.biwi.rest.models.ShortDescription;
+import org.biwi.rest.models.StartingInfoResponse;
 
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
@@ -32,5 +33,14 @@ public class AuctionDescriptionRepository implements PanacheRepository<AuctionDe
             }
         }
         return result;
+    }
+
+    public StartingInfoResponse getStartingInfo(String auctionId) {
+        AuctionDescription ad = find("auctionId", auctionId).firstResult();
+        if (ad != null) {
+            return new StartingInfoResponse(ad);
+        }
+        else
+            return null;
     }
 }

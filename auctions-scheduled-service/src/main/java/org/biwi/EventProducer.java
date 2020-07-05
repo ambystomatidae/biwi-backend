@@ -2,15 +2,14 @@ package org.biwi;
 
 import org.biwi.models.ScheduleAuctionEvent;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.jms.*;
-import javax.ws.rs.core.Response;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-@ApplicationScoped
+@RequestScoped
 public class EventProducer {
 
     @Inject
@@ -31,6 +30,10 @@ public class EventProducer {
         }
     }
 
+    /**
+     * @param start when the message is supposed to be delivered
+     * @return millis until the message is supposed to be delivered
+     */
     private static long getDeliveryDelay(LocalDateTime start) {
         ZonedDateTime zdt = start.atZone(ZoneId.of("GMT"));
         long startTime = zdt.toInstant().toEpochMilli();

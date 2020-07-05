@@ -4,40 +4,56 @@ import javax.json.bind.annotation.JsonbProperty;
 
 public class StartingSoonRequestObject {
     /**
-     * Number of hours
+     * Number of hours considered soon
      */
     @JsonbProperty("range")
     private int range;
 
     /**
-     * Max number of results
+     * Number of results to return per page
      */
-    @JsonbProperty("limit")
-    private int limit;
+    @JsonbProperty("pageSize")
+    private int pageSize;
+
+    /**
+     * Which page to return
+     */
+    @JsonbProperty("page")
+    private int page;
 
     public StartingSoonRequestObject() {
         this.range = 1;
-        this.limit = 10;
+        this.page = 1;
+        this.pageSize = 10;
     }
 
-    public StartingSoonRequestObject(int range, int limit) {
+    public StartingSoonRequestObject(int range, int pageSize, int page) {
         this.range = range;
-        this.limit = limit;
+        this.pageSize = pageSize;
+        this.page = page;
     }
 
     public int getRange() {
         return range;
     }
 
-    public int getLimit() {
-        return limit;
-    }
-
     public void setRange(int range) {
         this.range = range;
     }
 
-    public void setLimit(int limit) {
-        this.limit = limit;
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 }
