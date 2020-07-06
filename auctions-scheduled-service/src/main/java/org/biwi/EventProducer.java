@@ -22,7 +22,6 @@ public class EventProducer {
             ObjectMessage om = context.createObjectMessage(msg);
             om.setLongProperty("_AMQ_SCHED_DELIVERY", getDeliveryDelay(start));
             jp.send(context.createQueue("activateAuction"), om);
-
         }
         catch (Exception e) {
             e.printStackTrace();

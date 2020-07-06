@@ -1,4 +1,24 @@
 ---
+- name: Setup message broker
+  docker_swarm_service:
+    name: broker
+    image: vromero/activemq-artemis:2.11.0-alpine
+    env: 
+      ARTEMIS_USERNAME: quarkus
+      ARTEMIS_PASSWORD: quarkus
+      ENABLE_JMX_EXPORTER: 'true'
+    publish:
+      - published_port: 5672
+        target_port: 5672
+      - published_port: 8161
+        target_port: 8161
+    mounts:
+      - type: volume
+        source: 'broker-vol'
+        target: '/var/lib/artemis/data'
+    networks: 
+      - biwi-net
+
 - name: Setup database
   docker_swarm_service:
     name: db
@@ -6,20 +26,33 @@
     env:
       POSTGRES_PASSWORD: hibernate
       POSTGRES_USER: hibernate
-      POSTGRES_DB: biwidesc
     mounts:
       - type: volume
         source: 'db-vol'
         target: '/usr/lib/postgresql/data'
+      - type: bind
+        source: /opt/postgresql/sql
+        target: '/docker-entrypoint-initdb.d'
     networks:
       - biwi-net
 
-- name: Setup auctions-description-service
+- name: Setup auctions-description
   docker_swarm_service:
-    name: auctions-description-service
+    name: auctions-description
     image: ambystomatidae/biwi-auctions-description-service
     publish:
       - published_port: 10000
+        target_port: 8080
+    networks:
+      - biwi-net
+    force_update: true
+
+- name: Setup auctions-scheduled
+  docker_swarm_service:
+    name: auctions-scheduled
+    image: ambystomatidae/biwi-auctions-scheduled-service
+    publish:
+      - published_port: 11000
         target_port: 8080
     networks:
       - biwi-net

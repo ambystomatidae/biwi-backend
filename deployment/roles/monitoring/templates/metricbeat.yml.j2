@@ -223,6 +223,6 @@ metricbeat.modules:
     metricsets:
       - database
     period: 10s
-    hosts: ["postgres://db:5432/biwidesc?sslmode=disable"]
+    hosts: ["postgres://db:5432/biwidesc?sslmode=disable", "postgres://db:5432/scheduleddb?sslmode=disable"]
     username: hibernate
     password: hibernate

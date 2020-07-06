@@ -33,7 +33,7 @@
 - hosts: all
   become: yes
   tasks:
-    - name: Create directory structure
+    - name: Create metricbeat directory structure
       file:
         path: /opt/metricbeat
         state: directory
@@ -42,6 +42,16 @@
       template:
         src: "roles/monitoring/templates/metricbeat.yml.j2"
         dest: "/opt/metricbeat/metricbeat.yml"
+    - name: Create postgresql directory structure
+      file:
+        path: /opt/postgresql/sql
+        state: directory
+        mode: u=r
+    - name: Copy sql files to all hosts
+      template:
+        src: "roles/services/templates/initdbs.sql"
+        dest: "/opt/postgresql/sql/initdbs.sql"
+
 - hosts:
   - machine-1
   become: yes
