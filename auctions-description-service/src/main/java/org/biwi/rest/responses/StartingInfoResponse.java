@@ -1,4 +1,6 @@
-package org.biwi.rest.models;
+package org.biwi.rest.responses;
+
+import org.biwi.rest.models.AuctionDescription;
 
 import java.time.LocalTime;
 

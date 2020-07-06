@@ -1,7 +1,7 @@
 package org.biwi.rest.models;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import org.biwi.rest.requests.AuctionDescriptionPostRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

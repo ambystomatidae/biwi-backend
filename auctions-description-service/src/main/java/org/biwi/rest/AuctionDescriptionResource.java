@@ -1,9 +1,9 @@
 package org.biwi.rest;
 
 import org.biwi.rest.models.AuctionDescription;
-import org.biwi.rest.models.AuctionDescriptionPostRequest;
-import org.biwi.rest.models.ShortDescription;
-import org.biwi.rest.models.StartingInfoResponse;
+import org.biwi.rest.requests.AuctionDescriptionPostRequest;
+import org.biwi.rest.responses.ShortDescription;
+import org.biwi.rest.responses.StartingInfoResponse;
 import org.biwi.rest.repositories.AuctionDescriptionRepository;
 
 import javax.enterprise.context.RequestScoped;

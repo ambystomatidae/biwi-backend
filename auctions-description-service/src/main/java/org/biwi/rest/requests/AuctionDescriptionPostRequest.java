@@ -1,4 +1,4 @@
-package org.biwi.rest.models;
+package org.biwi.rest.requests;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;

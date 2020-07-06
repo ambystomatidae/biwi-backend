@@ -1,11 +1,14 @@
 package org.biwi;
 
-import org.biwi.models.AllStartingRequestObject;
-import org.biwi.models.ScheduleAuctionEvent;
+import org.biwi.external.StartingInfo;
+import org.biwi.external.StartingInfoService;
+import org.biwi.requests.AllStartingRequestObject;
 import org.biwi.models.ScheduledAuction;
-import org.biwi.models.StartingSoonRequestObject;
+import org.biwi.requests.StartingSoonRequestObject;
 import org.biwi.repositories.ScheduledAuctionRepository;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -14,6 +17,7 @@ import java.util.List;
 
 @Path("/v1")
 @Consumes(MediaType.APPLICATION_JSON)
+@RequestScoped
 public class ScheduledResource {
 
     @Inject
@@ -21,6 +25,10 @@ public class ScheduledResource {
 
     @Inject
     EventProducer producer;
+
+    @Inject
+    @RestClient
+    StartingInfoService startingInfoService;
 
     /**
      * Schedule an auction to start at a given date
@@ -31,6 +39,9 @@ public class ScheduledResource {
     @Path("schedule")
     @Produces(MediaType.APPLICATION_JSON)
     public Response schedule(ScheduledAuction auc) {
+        StartingInfo si = startingInfoService.getStartingInfo(auc.getAuctionId());
+        if (si == null)
+            return Response.status(404).build();
         try {
             repository.addScheduled(auc);
         }
@@ -38,9 +49,8 @@ public class ScheduledResource {
             // duplicate key
             return Response.status(403).build();
         }
-        // TODO: Get rest of info from Description service
-        producer.produce(new ScheduleAuctionEvent(), auc.getBeginDate());
-        return Response.ok(auc).build();
+        producer.produce(si, auc.getBeginDate());
+        return Response.ok(si).build();
     }
 
     /**

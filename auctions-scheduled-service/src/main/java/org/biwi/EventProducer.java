@@ -1,6 +1,6 @@
 package org.biwi;
 
-import org.biwi.models.ScheduleAuctionEvent;
+import org.biwi.external.StartingInfo;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ public class EventProducer {
     @Inject
     ConnectionFactory connectionFactory;
 
-    public void produce(ScheduleAuctionEvent msg, LocalDateTime start) {
+    public void produce(StartingInfo msg, LocalDateTime start) {
         try {
             JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE);
             JMSProducer jp = context.createProducer();

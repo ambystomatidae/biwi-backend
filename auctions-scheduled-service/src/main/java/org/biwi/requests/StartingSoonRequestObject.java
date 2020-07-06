@@ -1,4 +1,4 @@
-package org.biwi.models;
+package org.biwi.requests;
 
 import javax.json.bind.annotation.JsonbProperty;
 
