@@ -1,5 +1,6 @@
 package org.biwi.rest.repositories;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import org.biwi.rest.models.AuctionDescription;
 import org.biwi.rest.responses.ShortDescription;
@@ -7,6 +8,7 @@ import org.biwi.rest.responses.StartingInfoResponse;
 
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
+import java.util.List;
 
 @RequestScoped
 public class AuctionDescriptionRepository implements PanacheRepository<AuctionDescription> {
@@ -42,5 +44,9 @@ public class AuctionDescriptionRepository implements PanacheRepository<AuctionDe
         }
         else
             return null;
+    }
+
+    public List<ShortDescription> getAllNotExpired(int page, int pageSize) {
+        PanacheQuery query = find("from AuctionDescription where beginDate")
     }
 }

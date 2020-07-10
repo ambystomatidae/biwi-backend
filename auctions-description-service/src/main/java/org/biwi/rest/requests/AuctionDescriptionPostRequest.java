@@ -12,12 +12,12 @@ public class AuctionDescriptionPostRequest {
     private String description;
     private LocalDateTime beginDate;
     private LocalTime duration;
-    private List<byte[]> images;
-    private byte[] mainImage;
+    private List<String> images;
+    private String mainImage;
     private List<String> categories;
     private String sellerId;
 
-    public AuctionDescriptionPostRequest(String auctionId, String name, double startingPrice, double reservePrice, String description, LocalDateTime beginDate, LocalTime duration, List<byte[]> images, byte[] mainImage, List<String> categories, String sellerId) {
+    public AuctionDescriptionPostRequest(String auctionId, String name, double startingPrice, double reservePrice, String description, LocalDateTime beginDate, LocalTime duration, List<String> images, String mainImage, List<String> categories, String sellerId) {
         this.auctionId = auctionId;
         this.name = name;
         this.startingPrice = startingPrice;
@@ -90,19 +90,19 @@ public class AuctionDescriptionPostRequest {
         this.duration = duration;
     }
 
-    public List<byte[]> getImages() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImages(List<byte[]> images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 
-    public byte[] getMainImage() {
+    public String getMainImage() {
         return mainImage;
     }
 
-    public void setMainImage(byte[] mainImage) {
+    public void setMainImage(String mainImage) {
         this.mainImage = mainImage;
     }
 

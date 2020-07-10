@@ -2,15 +2,21 @@ package org.biwi.rest;
 
 import org.biwi.rest.models.AuctionDescription;
 import org.biwi.rest.requests.AuctionDescriptionPostRequest;
+import org.biwi.rest.requests.GetAllDescriptions;
 import org.biwi.rest.responses.ShortDescription;
 import org.biwi.rest.responses.StartingInfoResponse;
 import org.biwi.rest.repositories.AuctionDescriptionRepository;
+import org.biwi.rest.services.BucketManager;
+import org.biwi.rest.services.ImageEncoderUtil;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Path("/v1")
 @Produces(MediaType.APPLICATION_JSON)
@@ -20,6 +26,9 @@ public class AuctionDescriptionResource {
 
     @Inject
     AuctionDescriptionRepository repository;
+
+    @Inject
+    BucketManager bucketManager;
 
     @GET
     @Path("/{auctionId}")
@@ -40,7 +49,16 @@ public class AuctionDescriptionResource {
     @POST
     public Response add(AuctionDescriptionPostRequest desc) {
         AuctionDescription ad = new AuctionDescription(desc);
-        // TODO: Upload the images to a bucket and store the url!
+        UUID fileId = UUID.randomUUID();
+        String uri = bucketManager.storeImage(ImageEncoderUtil.decode(desc.getMainImage()), fileId.toString() + ".jpeg");
+        ad.setMainImage(uri);
+        List<String> imgs = new ArrayList<>();
+        for(String img : desc.getImages()) {
+            UUID imgId = UUID.randomUUID();
+            String imgUri = bucketManager.storeImage(ImageEncoderUtil.decode(img), imgId.toString() + ".jpeg");
+            imgs.add(imgUri);
+        }
+        ad.setImages(imgs);
         boolean success = repository.add(ad);
         if (success)
             return Response.ok(ad).build();
@@ -58,5 +76,12 @@ public class AuctionDescriptionResource {
         else {
             return Response.status(404).build();
         }
+    }
+
+    @GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllNotExpired(@QueryParam("category") String category) {
+        List<AuctionDescription> descriptions = repository.getAllNotExpired(request.getPage(), request.getPageSize());
     }
 }
