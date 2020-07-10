@@ -45,8 +45,4 @@ public class AuctionDescriptionRepository implements PanacheRepository<AuctionDe
         else
             return null;
     }
-
-    public List<ShortDescription> getAllNotExpired(int page, int pageSize) {
-        PanacheQuery query = find("from AuctionDescription where beginDate")
-    }
 }

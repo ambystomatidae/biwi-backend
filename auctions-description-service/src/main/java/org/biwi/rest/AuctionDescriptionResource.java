@@ -78,10 +78,4 @@ public class AuctionDescriptionResource {
         }
     }
 
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllNotExpired(@QueryParam("category") String category) {
-        List<AuctionDescription> descriptions = repository.getAllNotExpired(request.getPage(), request.getPageSize());
-    }
 }
