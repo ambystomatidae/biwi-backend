@@ -8,11 +8,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 @Path("/v1")
-@RegisterRestClient(configKey = "starting-info-api")
-public interface StartingInfoService {
+@RegisterRestClient(configKey = "auctions-description-api")
+public interface AuctionsDescriptionService {
 
     @GET
     @Path("/{auctionId}/startInfo")
     @Produces("application/json")
     StartingInfo getStartingInfo(@PathParam("auctionId") String auctionId);
+
+    @GET
+    @Path("{auctionId}/short")
+    @Produces("application/json")
+    ShortDescription getShortDescription(@PathParam("auctionId") String auctionId);
 }

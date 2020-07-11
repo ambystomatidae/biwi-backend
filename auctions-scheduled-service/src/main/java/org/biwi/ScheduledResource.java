@@ -1,7 +1,8 @@
 package org.biwi;
 
+import org.biwi.external.ShortDescription;
 import org.biwi.external.StartingInfo;
-import org.biwi.external.StartingInfoService;
+import org.biwi.external.AuctionsDescriptionService;
 import org.biwi.requests.AllStartingRequestObject;
 import org.biwi.models.ScheduledAuction;
 import org.biwi.requests.StartingSoonRequestObject;
@@ -13,6 +14,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("/v1")
@@ -28,7 +30,7 @@ public class ScheduledResource {
 
     @Inject
     @RestClient
-    StartingInfoService startingInfoService;
+    AuctionsDescriptionService auctionsDescriptionService;
 
     /**
      * Schedule an auction to start at a given date
@@ -39,7 +41,7 @@ public class ScheduledResource {
     @Path("schedule")
     @Produces(MediaType.APPLICATION_JSON)
     public Response schedule(ScheduledAuction auc) {
-        StartingInfo si = startingInfoService.getStartingInfo(auc.getAuctionId());
+        StartingInfo si = auctionsDescriptionService.getStartingInfo(auc.getAuctionId());
         if (si == null)
             return Response.status(404).build();
         try {
@@ -65,7 +67,11 @@ public class ScheduledResource {
         int page = soon.getPage();
         int pageSize = soon.getPageSize();
         List<ScheduledAuction> startingSoon = repository.getStartingSoon(range, page, pageSize);
-        return Response.ok(startingSoon).build();
+        List<ShortDescription> result = new ArrayList<>();
+        for(ScheduledAuction s : startingSoon) {
+            result.add(auctionsDescriptionService.getShortDescription(s.getAuctionId()));
+        }
+        return Response.ok(result).build();
     }
 
     @GET
@@ -75,6 +81,10 @@ public class ScheduledResource {
         int pageSize = all.getPageSize();
         int page = all.getPage();
         List<ScheduledAuction> allScheduled = repository.getAll(pageSize, page);
-        return Response.ok(allScheduled).build();
+        List<ShortDescription> result = new ArrayList<>();
+        for(ScheduledAuction s : allScheduled) {
+            result.add(auctionsDescriptionService.getShortDescription(s.getAuctionId()));
+        }
+        return Response.ok(result).build();
     }
 }
