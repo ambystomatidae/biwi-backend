@@ -7,14 +7,15 @@ import com.google.cloud.storage.*;
 import javax.enterprise.context.RequestScoped;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @RequestScoped
 public class BucketManager {
 
-    private String bucketName = "imgs-biwi";
-    private String projectId = "biwi1920";
+    private final String bucketName;
+    private final String projectId;
 
     public BucketManager() {
         this.bucketName = "imgs-biwi";
@@ -24,14 +25,14 @@ public class BucketManager {
     public String storeImage(byte[] image, String name) {
         String uri = null;
         try {
-            Credentials creds = GoogleCredentials.fromStream(new FileInputStream("classes/biwi1920-2e1ab49121ea.json"));
+            InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("biwi1920-2e1ab49121ea.json");
+            Credentials creds = GoogleCredentials.fromStream(resourceAsStream);
             Storage storage = StorageOptions.newBuilder()
                     .setCredentials(creds)
                     .setProjectId(this.projectId)
                     .build().getService();
             BlobId blobId = BlobId.of(this.bucketName, name);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-            image = Files.readAllBytes(Paths.get("classes/test_portrait.jpeg"));
             storage.create(blobInfo, image);
             uri = "http://storage.googleapis.com/" + this.bucketName + "/" + name;
 

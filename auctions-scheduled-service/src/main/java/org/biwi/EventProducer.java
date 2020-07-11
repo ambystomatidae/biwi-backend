@@ -34,8 +34,9 @@ public class EventProducer {
      * @return millis until the message is supposed to be delivered
      */
     private static long getDeliveryDelay(LocalDateTime start) {
-        ZonedDateTime zdt = start.atZone(ZoneId.of("GMT"));
-        long startTime = zdt.toInstant().toEpochMilli();
+        ZonedDateTime zdt = start.atZone(ZoneId.of("Europe/London"));
+        ZonedDateTime toUtc = zdt.withZoneSameInstant(ZoneId.of("UTC"));
+        long startTime = toUtc.toInstant().toEpochMilli();
         return startTime - System.currentTimeMillis();
     }
 }

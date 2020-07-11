@@ -5,3 +5,4 @@ packages:
   - curl
   - software-properties-common
   - python3-pip
+  - openntpd
