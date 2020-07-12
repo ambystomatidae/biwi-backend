@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 public class AuctionDescription extends PanacheEntityBase {
@@ -49,7 +50,7 @@ public class AuctionDescription extends PanacheEntityBase {
     }
 
     public AuctionDescription(AuctionDescriptionPostRequest r) {
-        this.auctionId = r.getAuctionId();
+        this.auctionId = UUID.randomUUID().toString();
         this.name = r.getName();
         this.startingPrice = r.getStartingPrice();
         this.reservePrice = r.getReservePrice();
