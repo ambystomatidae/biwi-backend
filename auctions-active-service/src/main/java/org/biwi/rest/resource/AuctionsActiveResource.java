@@ -5,6 +5,7 @@ import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.biwi.rest.*;
 import org.biwi.external.*;
+import org.biwi.acme.jms.*;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -30,6 +31,9 @@ public class AuctionsActiveResource implements Runnable {
 
     @Inject
     ConnectionFactory connectionFactory;
+
+    @Inject
+    CloseAuctionProducer producer;
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -126,6 +130,7 @@ public class AuctionsActiveResource implements Runnable {
                 System.out.println("auction: " + auction.toString());
                 if(auctActiveRepository.findById(auction.getAuctionId())==null){
                     auctActiveRepository.newAuction(auction.getAuctionId(),auction.getDuration(),auction.getStartingPrice(),auction.getReservePrice());
+                    producer.produce(auction.getAuctionId());
                 }
             }
         } catch (Exception e) {
