@@ -21,14 +21,13 @@ import java.util.concurrent.TimeUnit;
  * A bean producing random prices every 5 seconds and sending them to the prices JMS queue.
  */
 @ApplicationScoped
-public class closeAuctionProducer  {
+public class CloseAuctionProducer {
 
     @Inject
     ConnectionFactory connectionFactory;
 
     public void produce(String id) {
         try (JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE)) {
-            System.out.println("OUT");
             context.createProducer().send(context.createQueue("closeAuction"), id );
         }
     }
