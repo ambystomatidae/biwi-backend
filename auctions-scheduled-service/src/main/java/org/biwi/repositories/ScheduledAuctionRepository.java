@@ -66,11 +66,36 @@ public class ScheduledAuctionRepository implements PanacheRepository<ScheduledAu
         if (filter != null && filter.byPrice()) {
             double lower = filter.getLowerPrice() != null ? filter.getLowerPrice() : 0;
             double higher = filter.getHigherPrice() != null ? filter.getHigherPrice() : Double.MAX_VALUE;
-            query = find("from ScheduledAuction where beginDate > ?1 and startingPrice > ?2 and startingPrice < ?3", Sort.by(sortBy), startFilter, lower, higher);
+            if (filter.byCategories()) {
+                String queryString = "from ScheduledAuction as s where s.beginDate > ?1 and s.startingPrice > ?2 and s.startingPrice < ?3 and (";
+                queryString = getQueryStringFromCategories(filter, queryString);
+                query = find(queryString, Sort.by(sortBy), startFilter, lower, higher);
+            }
+            else {
+                query = find("from ScheduledAuction where beginDate > ?1 and startingPrice > ?2 and startingPrice < ?3", Sort.by(sortBy), startFilter, lower, higher);
+            }
         }
         else {
-            query = find("from ScheduledAuction where beginDate > ?1", Sort.by(sortBy), startFilter);
+            if (filter != null && filter.byCategories()) {
+                String queryString = "from ScheduledAuction as s where s.beginDate > ?1 and (";
+                queryString = getQueryStringFromCategories(filter, queryString);
+                query = find(queryString, Sort.by(sortBy), startFilter);
+            }
+            else {
+                query = find("from ScheduledAuction where beginDate > ?1", Sort.by(sortBy), startFilter);
+            }
         }
         return query.page(Page.of(page, pageSize)).list();
+    }
+
+    private String getQueryStringFromCategories(Filter filter, String queryString) {
+        List<String> categories = filter.getCategories();
+        queryString += "'" + categories.get(0) + "' in elements(s.categories)";
+        for(int i = 1; i < categories.size(); i++) {
+            String s = categories.get(i);
+            queryString += "or '" + s + "' in elements(s.categories)";
+        }
+        queryString += ")";
+        return queryString;
     }
 }

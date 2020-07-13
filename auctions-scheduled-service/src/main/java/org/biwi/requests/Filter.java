@@ -67,4 +67,8 @@ public class Filter {
     public boolean byPrice() {
         return lowerPrice != null || higherPrice != null;
     }
+
+    public boolean byCategories() {
+        return this.categories != null;
+    }
 }

@@ -4,6 +4,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(indexes = {
@@ -17,6 +18,8 @@ public class ScheduledAuction extends PanacheEntityBase {
     private LocalDateTime beginDate;
     @Column(name = "startingprice")
     private double startingPrice;
+    @ElementCollection
+    private List<String> categories;
 
     public String getAuctionId() {
         return auctionId;
@@ -40,5 +43,13 @@ public class ScheduledAuction extends PanacheEntityBase {
 
     public void setStartingPrice(double startingPrice) {
         this.startingPrice = startingPrice;
+    }
+
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
     }
 }
