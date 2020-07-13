@@ -1,0 +1,6 @@
+---
+internal_network: '192.168.77.0/24'
+create: 'false'
+manager_hostname: 'machine-1'
+type: 'manager'
+network_name: 'biwi-net'

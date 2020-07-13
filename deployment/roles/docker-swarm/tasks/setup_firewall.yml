@@ -1,0 +1,26 @@
+---
+- name: Setup common TCP ports
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+    src: "{{ internal_network }}"
+  loop:
+    - "2376"
+    - "7946"
+- name: Setup common UDP ports
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: udp
+    src: "{{ internal_network }}"
+  loop:
+    - "7946"
+    - "4789"
+- name: Setup Manager ports
+  ufw:
+    rule: allow
+    port: "2377"
+    proto: tcp
+    src: "{{ internal_network }}"
+  when: type == 'manager'

@@ -1,0 +1,25 @@
+---
+- name: Setup firewall ports in debian
+  import_tasks: setup_firewall.yml
+
+- name: Start Docker Swarm
+  import_tasks: create_swarm.yml
+  when: create == 'true'
+
+- name: Join Swarm as Worker
+  docker_swarm:
+    state: join
+    advertise_addr: "{{ hostvars[inventory_hostname].ansible_enp0s8.ipv4.address }}"
+    join_token: "{{ hostvars[manager_hostname].swarm_info.swarm_facts.JoinTokens.Worker }}"
+    remote_addrs:
+    - "{{ hostvars[manager_hostname].ansible_enp0s8.ipv4.address }}:2377"
+  when: type == 'worker'
+
+- name: Join Swarm as Manager
+  docker_swarm:
+    state: join
+    advertise_addr: "{{ hostvars[inventory_hostname].ansible_enp0s8.ipv4.address }}"
+    join_token: "{{ hostvars[manager_hostname].swarm_info.swarm_facts.JoinTokens.Manager }}"
+    remote_addrs:
+    - "{{ hostvars[manager_hostname].ansible_enp0s8.ipv4.address }}:2377"
+  when: type == 'manager'

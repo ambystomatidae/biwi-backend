@@ -1,66 +1,37 @@
-package org.biwi.rest.models;
+package org.biwi.rest.requests;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import org.biwi.rest.requests.AuctionDescriptionPostRequest;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-@Entity
-public class AuctionDescription extends PanacheEntityBase {
-    @Id
+public class AuctionDescriptionPostRequest {
     private String auctionId;
-    @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
     private double startingPrice;
-    @Column(nullable = false)
     private double reservePrice;
-    @Column(nullable = false)
     private String description;
-    @Column(nullable = false)
     private LocalDateTime beginDate;
-    @Column(nullable = false)
     private LocalTime duration;
-    @ElementCollection
     private List<String> images;
-    @Column(nullable = false)
     private String mainImage;
-    @ElementCollection
     private List<String> categories;
-    @Column(nullable = false)
     private String sellerId;
 
-    public AuctionDescription() {
-        this.auctionId = null;
-        this.name = "";
-        this.startingPrice = 0;
-        this.reservePrice = 0;
-        this.description = "";
-        this.beginDate = LocalDateTime.now();
-        this.duration = LocalTime.of(1,0);
-        this.images = new ArrayList<>();
-        this.mainImage = null;
-        this.categories = new ArrayList<>();
-        this.sellerId = null;
+    public AuctionDescriptionPostRequest(String auctionId, String name, double startingPrice, double reservePrice, String description, LocalDateTime beginDate, LocalTime duration, List<String> images, String mainImage, List<String> categories, String sellerId) {
+        this.auctionId = auctionId;
+        this.name = name;
+        this.startingPrice = startingPrice;
+        this.reservePrice = reservePrice;
+        this.description = description;
+        this.beginDate = beginDate;
+        this.duration = duration;
+        this.images = images;
+        this.mainImage = mainImage;
+        this.categories = categories;
+        this.sellerId = sellerId;
     }
 
-    public AuctionDescription(AuctionDescriptionPostRequest r) {
-        this.auctionId = UUID.randomUUID().toString();
-        this.name = r.getName();
-        this.startingPrice = r.getStartingPrice();
-        this.reservePrice = r.getReservePrice();
-        this.description = r.getDescription();
-        this.beginDate = r.getBeginDate();
-        this.duration = r.getDuration();
-        this.images = new ArrayList<>();
-        this.mainImage = "";
-        this.categories = r.getCategories();
-        this.sellerId = r.getSellerId();
+    public AuctionDescriptionPostRequest() {
     }
 
     public String getAuctionId() {

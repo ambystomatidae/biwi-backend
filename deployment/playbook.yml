@@ -1,0 +1,60 @@
+---
+- hosts: all
+  become: yes
+  roles:
+    - docker
+  tasks:
+    - name: Increase vm.max_map_count
+      sysctl:
+        name: vm.max_map_count
+        value: '262144'
+        sysctl_set: yes
+        state: present
+
+- hosts: machine-1
+  become: yes
+  roles:
+    - role: docker-swarm
+      vars:
+        create: 'true'
+        type: 'manager'
+        network_name: 'biwi-net'
+
+- hosts:
+  - machine-2
+  - machine-3
+  become: yes
+  roles:
+    - role: docker-swarm
+      vars:
+        create: 'false'
+        type: 'worker'
+
+- hosts: all
+  become: yes
+  tasks:
+    - name: Create metricbeat directory structure
+      file:
+        path: /opt/metricbeat
+        state: directory
+        mode: u=r
+    - name: Copy metricbeat configuration file to all hosts
+      template:
+        src: "roles/monitoring/templates/metricbeat.yml.j2"
+        dest: "/opt/metricbeat/metricbeat.yml"
+    - name: Create postgresql directory structure
+      file:
+        path: /opt/postgresql/sql
+        state: directory
+        mode: u=r
+    - name: Copy sql files to all hosts
+      template:
+        src: "roles/services/templates/initdbs.sql"
+        dest: "/opt/postgresql/sql/initdbs.sql"
+
+- hosts:
+  - machine-1
+  become: yes
+  roles:
+    - monitoring
+    - services
