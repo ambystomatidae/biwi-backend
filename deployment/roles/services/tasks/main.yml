@@ -113,3 +113,14 @@
     networks:
       - biwi-net
     force_update: true
+
+- name: Setup auctions-closed-service
+  docker_swarm_service:
+    name: auctions-closed
+    image: ambystomatidae/biwi-auctions-closed-service
+    publish:
+      - published_port: 15000
+        target_port: 8080
+    networks:
+      - biwi-net
+    force_update: true
