@@ -4,6 +4,7 @@ import org.biwi.rest.models.AuctionDescription;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 public class ShortDescription {
     private String name;
@@ -11,13 +12,15 @@ public class ShortDescription {
     private LocalDateTime beginDate;
     private String mainImage;
     private LocalTime duration;
+    private List<String> categories;
 
-    public ShortDescription(String name, double startingPrice, LocalDateTime beginDate, String mainImage, LocalTime duration) {
+    public ShortDescription(String name, double startingPrice, LocalDateTime beginDate, String mainImage, LocalTime duration, List<String> categories) {
         this.name = name;
         this.startingPrice = startingPrice;
         this.beginDate = beginDate;
         this.mainImage = mainImage;
         this.duration = duration;
+        this.categories = categories;
     }
 
     public ShortDescription(AuctionDescription e) {
@@ -26,6 +29,7 @@ public class ShortDescription {
         this.beginDate = e.getBeginDate();
         this.mainImage = e.getMainImage();
         this.duration = e.getDuration();
+        this.categories = e.getCategories();
     }
 
     public String getName() {
@@ -66,5 +70,13 @@ public class ShortDescription {
 
     public void setDuration(LocalTime duration) {
         this.duration = duration;
+    }
+
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
     }
 }
