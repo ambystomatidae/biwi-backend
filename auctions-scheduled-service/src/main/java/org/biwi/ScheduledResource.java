@@ -82,7 +82,10 @@ public class ScheduledResource {
         int pageSize = all.getPageSize();
         int page = all.getPage();
         Filter filter = all.getFilter();
-        List<ScheduledAuction> allScheduled = repository.getAll(pageSize, page, filter);
+        String sortBy = all.getSortBy();
+        if (sortBy == null)
+            sortBy = "beginDate"; // by default sorted by date
+        List<ScheduledAuction> allScheduled = repository.getAll(pageSize, page, filter, sortBy);
         List<ShortDescription> result = new ArrayList<>();
         for(ScheduledAuction s : allScheduled) {
             ShortDescription sd = auctionsDescriptionService.getShortDescription(s.getAuctionId());

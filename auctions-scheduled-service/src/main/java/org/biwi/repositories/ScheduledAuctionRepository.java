@@ -57,18 +57,19 @@ public class ScheduledAuctionRepository implements PanacheRepository<ScheduledAu
      * @param pageSize number of results returned
      * @param page if there are more results than pageSize, gets the page-th page.
      * @param filter object to filter results
+     * @param sortBy if sorted by date or price
      * @return List of scheduled auctions that meet given criteria
      */
-    public List<ScheduledAuction> getAll(int pageSize, int page, Filter filter) {
+    public List<ScheduledAuction> getAll(int pageSize, int page, Filter filter, String sortBy) {
         LocalDateTime startFilter = LocalDateTime.now();
         PanacheQuery<ScheduledAuction> query;
         if (filter != null && filter.byPrice()) {
             double lower = filter.getLowerPrice() != null ? filter.getLowerPrice() : 0;
             double higher = filter.getHigherPrice() != null ? filter.getHigherPrice() : Double.MAX_VALUE;
-            query = find("from ScheduledAuction where beginDate > ?1 and startingPrice > ?2 and startingPrice < ?3", Sort.by("beginDate"), startFilter, lower, higher);
+            query = find("from ScheduledAuction where beginDate > ?1 and startingPrice > ?2 and startingPrice < ?3", Sort.by(sortBy), startFilter, lower, higher);
         }
         else {
-            query = find("from ScheduledAuction where beginDate > ?1", Sort.by("beginDate"), startFilter);
+            query = find("from ScheduledAuction where beginDate > ?1", Sort.by(sortBy), startFilter);
         }
         return query.page(Page.of(page, pageSize)).list();
     }
