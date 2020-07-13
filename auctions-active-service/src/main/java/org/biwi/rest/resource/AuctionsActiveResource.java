@@ -4,6 +4,7 @@ package org.biwi.rest.resource;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.biwi.rest.*;
+import org.biwi.external.*;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -114,16 +115,22 @@ public class AuctionsActiveResource implements Runnable {
             JMSConsumer consumer = context.createConsumer(context.createQueue("activateAuction"));
             while (true) {
                 Message message = consumer.receive();
+                System.out.println("I got a message! " + message.toString());
                 if (message == null) {
+                    System.out.println("é nulo!");
                     return;
                 }
-                ScheduleAuctionEvent auction = message.getBody(ScheduleAuctionEvent.class);
+                ObjectMessage om = (ObjectMessage) message;
+                System.out.println("OM: " + om.toString());
+                StartingInfo auction = message.getBody(StartingInfo.class);
+                System.out.println("auction: " + auction.toString());
                 if(auctActiveRepository.findById(auction.getAuctionId())==null){
                     auctActiveRepository.newAuction(auction.getAuctionId(),auction.getDuration(),auction.getStartingPrice(),auction.getReservePrice());
                 }
             }
-        } catch (JMSException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            System.out.println("errou");
+            e.printStackTrace();
         }
     }
 

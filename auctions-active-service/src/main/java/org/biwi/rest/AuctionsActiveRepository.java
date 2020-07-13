@@ -15,7 +15,6 @@ import static org.quartz.TriggerBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.*;
 import static org.quartz.DateBuilder.*:
 */
- */
 
 
 @ApplicationScoped

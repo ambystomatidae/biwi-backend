@@ -1,21 +1,23 @@
-package org.biwi.rest;
+package org.biwi.external;
 
 import java.io.Serializable;
 import java.time.LocalTime;
 
-public class ScheduleAuctionEvent implements Serializable {
+public class StartingInfo implements Serializable {
     private String auctionId;
     private double startingPrice;
     private double reservePrice;
     private LocalTime duration;
 
-    public ScheduleAuctionEvent(String auctionId, double startingPrice, double reservePrice, LocalTime duration) {
+    public StartingInfo() {
+    }
+
+    public StartingInfo(String auctionId, double startingPrice, double reservePrice, LocalTime duration) {
         this.auctionId = auctionId;
         this.startingPrice = startingPrice;
         this.reservePrice = reservePrice;
         this.duration = duration;
     }
-
 
     public String getAuctionId() {
         return auctionId;

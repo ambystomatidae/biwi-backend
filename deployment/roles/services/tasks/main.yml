@@ -33,8 +33,12 @@
       - type: bind
         source: /opt/postgresql/sql
         target: '/docker-entrypoint-initdb.d'
+    publish:
+      - published_port: 5432
+        target_port: 5432
     networks:
       - biwi-net
+    force_update: true
 
 - name: Setup auctions-description
   docker_swarm_service:
@@ -53,6 +57,58 @@
     image: ambystomatidae/biwi-auctions-scheduled-service
     publish:
       - published_port: 11000
+        target_port: 8080
+    networks:
+      - biwi-net
+    force_update: true
+
+- name: Setup keycloak
+  docker_swarm_service:
+    name: keycloak
+    image: jboss/keycloak
+    networks:
+      - biwi-net
+    force_update: true
+    mounts:
+      - type: bind
+        source: /opt/keycloak/biwi_realm.json
+        target: /usr/tmp/biwi_realm.json
+    env:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /usr/tmp/biwi_realm.json
+    publish:
+      - published_port: 5000
+        target_port: 8080
+
+- name: Setup user-service
+  docker_swarm_service:
+    name: user
+    image: ambystomatidae/biwi-user-service
+    publish:
+      - published_port: 12000
+        target_port: 8080
+    networks:
+      - biwi-net
+    force_update: true
+
+- name: Setup categories-service
+  docker_swarm_service:
+    name: categories
+    image: ambystomatidae/biwi-categories-service
+    publish:
+      - published_port: 13000
+        target_port: 8080
+    networks:
+      - biwi-net
+    force_update: true
+
+- name: Setup auctions-active-service
+  docker_swarm_service:
+    name: auctions-active
+    image: ambystomatidae/biwi-auctions-active-service
+    publish:
+      - published_port: 14000
         target_port: 8080
     networks:
       - biwi-net

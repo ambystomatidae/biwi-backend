@@ -2,7 +2,6 @@ package org.biwi.acme.jms;
 
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
-import org.biwi.rest.ScheduleAuctionEvent;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
