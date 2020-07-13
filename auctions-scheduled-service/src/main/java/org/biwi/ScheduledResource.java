@@ -5,6 +5,7 @@ import org.biwi.external.StartingInfo;
 import org.biwi.external.AuctionsDescriptionService;
 import org.biwi.requests.AllStartingRequestObject;
 import org.biwi.models.ScheduledAuction;
+import org.biwi.requests.Filter;
 import org.biwi.requests.StartingSoonRequestObject;
 import org.biwi.repositories.ScheduledAuctionRepository;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -80,10 +81,12 @@ public class ScheduledResource {
     public Response getAll(AllStartingRequestObject all) {
         int pageSize = all.getPageSize();
         int page = all.getPage();
-        List<ScheduledAuction> allScheduled = repository.getAll(pageSize, page);
+        Filter filter = all.getFilter();
+        List<ScheduledAuction> allScheduled = repository.getAll(pageSize, page, filter);
         List<ShortDescription> result = new ArrayList<>();
         for(ScheduledAuction s : allScheduled) {
-            result.add(auctionsDescriptionService.getShortDescription(s.getAuctionId()));
+            ShortDescription sd = auctionsDescriptionService.getShortDescription(s.getAuctionId());
+            result.add(sd);
         }
         return Response.ok(result).build();
     }

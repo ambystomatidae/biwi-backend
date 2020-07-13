@@ -23,7 +23,7 @@ public class StartingSoonRequestObject {
 
     public StartingSoonRequestObject() {
         this.range = 1;
-        this.page = 1;
+        this.page = 0;
         this.pageSize = 10;
     }
 

@@ -5,6 +5,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
 import org.biwi.models.ScheduledAuction;
+import org.biwi.requests.Filter;
 
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
@@ -55,11 +56,20 @@ public class ScheduledAuctionRepository implements PanacheRepository<ScheduledAu
     /**
      * @param pageSize number of results returned
      * @param page if there are more results than pageSize, gets the page-th page.
+     * @param filter object to filter results
      * @return List of scheduled auctions that meet given criteria
      */
-    public List<ScheduledAuction> getAll(int pageSize, int page) {
+    public List<ScheduledAuction> getAll(int pageSize, int page, Filter filter) {
         LocalDateTime startFilter = LocalDateTime.now();
-        PanacheQuery<ScheduledAuction> query = find("from ScheduledAuction where beginDate > ?1", Sort.by("beginDate"), startFilter);
+        PanacheQuery<ScheduledAuction> query;
+        if (filter != null && filter.byPrice()) {
+            double lower = filter.getLowerPrice() != null ? filter.getLowerPrice() : 0;
+            double higher = filter.getHigherPrice() != null ? filter.getHigherPrice() : Double.MAX_VALUE;
+            query = find("from ScheduledAuction where beginDate > ?1 and startingPrice > ?2 and startingPrice < ?3", Sort.by("beginDate"), startFilter, lower, higher);
+        }
+        else {
+            query = find("from ScheduledAuction where beginDate > ?1", Sort.by("beginDate"), startFilter);
+        }
         return query.page(Page.of(page, pageSize)).list();
     }
 }

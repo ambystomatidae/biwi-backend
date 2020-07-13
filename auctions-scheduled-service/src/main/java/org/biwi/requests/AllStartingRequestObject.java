@@ -10,9 +10,13 @@ public class AllStartingRequestObject {
     @JsonbProperty("page")
     private int page;
 
+    @JsonbProperty(value = "filters", nillable = true)
+    private Filter filter;
+
     public AllStartingRequestObject() {
-        this.page = 1;
-        this.pageSize = 10;
+        this.page = 0;
+        this.pageSize = 20;
+        this.filter = null;
     }
 
     public AllStartingRequestObject(int pageSize, int page) {
@@ -34,5 +38,13 @@ public class AllStartingRequestObject {
 
     public void setPage(int page) {
         this.page = page;
+    }
+
+    public Filter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(Filter filter) {
+        this.filter = filter;
     }
 }
