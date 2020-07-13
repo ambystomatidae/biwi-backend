@@ -1,0 +1,18 @@
+Para gerar ficheiro de configuração do realm:
+
+docker exec -it keycloak /opt/jboss/keycloak/bin/standalone.sh \
+-Djboss.socket.binding.port-offset=100 -Dkeycloak.migration.action=export \
+-Dkeycloak.migration.provider=singleFile \
+-Dkeycloak.migration.realmName=biwi \
+-Dkeycloak.migration.usersExportStrategy=REALM_FILE \
+-Dkeycloak.migration.file=/tmp/biwi_realm.json
+
+Para extrair ficheiro do container:
+
+docker cp keycloak:/tmp/biwi_realm.json /tmp
+
+Para iniciar servidor keycloak e importar o realm: (ter a certeza que /tmp/biwi_realm.json está correto)
+
+
+docker run --name keycloak -p 8180:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin \
+    -e KEYCLOAK_IMPORT=usr/tmp/biwi_realm.json -v /tmp/biwi_realm.json:/usr/tmp/biwi_realm.json jboss/keycloak
