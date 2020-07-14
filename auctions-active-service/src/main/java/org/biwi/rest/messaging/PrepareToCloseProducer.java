@@ -1,10 +1,4 @@
-package org.biwi.rest.producer;
-
-import org.biwi.rest.model.Bid;
-import org.biwi.rest.model.BidEvent;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+package org.biwi.rest.messaging;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -20,12 +14,12 @@ public class PrepareToCloseProducer {
     ConnectionFactory connectionFactory;
 
 
-    public void produce(String id, LocalDateTime start) {
+    public void produce(String id, LocalDateTime end) {
         try {
             JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE);
             JMSProducer jp = context.createProducer();
             ObjectMessage om = context.createObjectMessage(id);
-            om.setLongProperty("_AMQ_SCHED_DELIVERY", getDeliveryDelay(start));
+            om.setLongProperty("_AMQ_SCHED_DELIVERY", getDeliveryDelay(end));
             jp.send(context.createQueue("prepareToClose"), om);
         }
         catch (Exception e) {
@@ -38,8 +32,8 @@ public class PrepareToCloseProducer {
      * @param start when the message is supposed to be delivered
      * @return millis until the message is supposed to be delivered
      */
-    private static long getDeliveryDelay(LocalDateTime start) {
-        ZonedDateTime zdt = start.atZone(ZoneId.of("UTC"));
+    private static long getDeliveryDelay(LocalDateTime end) {
+        ZonedDateTime zdt = end.atZone(ZoneId.of("UTC"));
         return zdt.toInstant().toEpochMilli();
     }
 

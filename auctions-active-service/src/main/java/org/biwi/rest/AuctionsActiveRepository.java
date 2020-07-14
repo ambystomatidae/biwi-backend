@@ -3,22 +3,12 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import org.biwi.rest.model.AuctionsActive;
 import org.biwi.rest.model.Bid;
 import org.biwi.rest.model.ShortDescription;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-
-/*
-import static org.quartz.TriggerBuilder.*;
-import static org.quartz.SimpleScheduleBuilder.*;
-import static org.quartz.DateBuilder.*:
-*/
 
 
 @ApplicationScoped
@@ -78,15 +68,6 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
             persist(aa);
         }
         return aa;
-    }
-
-    public LocalDateTime closeAuction(String id) {
-        AuctionsActive aa = this.findById(id);
-        if(aa!= null){
-            aa.setOpen(false);
-            return aa.getEndTimeAuction();
-        }
-        return null;
     }
 
 

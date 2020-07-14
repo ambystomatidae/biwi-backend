@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-public class ShortDescription extends PanacheEntityBase {
+public class ShortDescription {
     public String auctionID;
     public String sellerID;
     public String name;
@@ -20,7 +20,6 @@ public class ShortDescription extends PanacheEntityBase {
 
 
     public ShortDescription(){
-
     }
 
     public ShortDescription(String auctionID, String sellerID, String name, double startingPrice, LocalDateTime beginDate, String image, double actualPrice, LocalTime duration, List<String> categories) {
