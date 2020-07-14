@@ -6,9 +6,11 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.jms.*;
 
+@ApplicationScoped
 public class PrepareToCloseProducer {
 
     @Inject
@@ -19,7 +21,7 @@ public class PrepareToCloseProducer {
         try {
             JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE);
             JMSProducer jp = context.createProducer();
-            jp.send(context.createQueue("auctionBid"), id);
+            jp.send(context.createQueue("prepareToClose"), id);
         }
         catch (Exception e) {
             e.printStackTrace();

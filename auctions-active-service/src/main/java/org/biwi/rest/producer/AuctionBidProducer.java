@@ -2,12 +2,13 @@ package org.biwi.rest.producer;
 import org.biwi.rest.model.Bid;
 import org.biwi.rest.model.BidEvent;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.jms.*;
 
 
-@RequestScoped
+@ApplicationScoped
 public class AuctionBidProducer {
 
     @Inject

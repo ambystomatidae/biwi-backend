@@ -1,4 +1,5 @@
 package org.biwi.rest.producer;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.jms.*;
@@ -7,7 +8,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 
-@RequestScoped
+@ApplicationScoped
 public class CloseAuctionProducer {
 
     @Inject
