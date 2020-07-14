@@ -1,31 +1,24 @@
-package org.biwi.rest;
+package org.biwi.rest.model;
 
-import java.io.Serializable;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
+import javax.persistence.Entity;
 import java.time.LocalDateTime;
 
-public class BidEvent implements Serializable {
+@Entity
+public class Bid extends PanacheEntity {
 
-    private String auctionId;
     private double value;
     private LocalDateTime timeStamp;
     private String idUser;
 
-    public BidEvent(){
+    public Bid(){
     }
 
-    public BidEvent(String auctionId, double value, LocalDateTime timeStamp, String idUser) {
-        this.auctionId = auctionId;
-        this.value = value;
-        this.timeStamp = timeStamp;
+    public Bid(String idUser, double value){
         this.idUser = idUser;
-    }
-
-    public String getAuctionId() {
-        return auctionId;
-    }
-
-    public void setAuctionId(String auctionId) {
-        this.auctionId = auctionId;
+        this.value = value;
+        this.timeStamp = LocalDateTime.now();
     }
 
     public double getValue() {

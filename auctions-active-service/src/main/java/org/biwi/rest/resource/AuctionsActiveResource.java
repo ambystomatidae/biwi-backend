@@ -1,25 +1,23 @@
 package org.biwi.rest.resource;
 
 
-import io.quarkus.runtime.ShutdownEvent;
-import io.quarkus.runtime.StartupEvent;
+
+import org.biwi.rest.model.Bid;
+import org.biwi.rest.model.ShortDescription;
+import org.biwi.rest.producer.*;
 import org.biwi.rest.*;
 import org.biwi.external.*;
-import org.biwi.acme.jms.*;
+import org.biwi.rest.model.AuctionsActive;
 
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.*;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 @Path("/active")
 @Produces(MediaType.APPLICATION_JSON)
@@ -33,17 +31,12 @@ public class AuctionsActiveResource implements Runnable {
     ConnectionFactory connectionFactory;
 
     @Inject
-    CloseAuctionProducer producer;
+    CloseAuctionProducer closeauction;
 
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    @Inject
+    AuctionBidProducer auctionBid;
 
 
-    void onStart(@Observes StartupEvent ev) {
-        scheduler.submit(this);
-    }
-    void onStop(@Observes ShutdownEvent ev) {
-        scheduler.shutdown();
-    }
 
     @GET
     @Path("/{id}")
@@ -58,7 +51,7 @@ public class AuctionsActiveResource implements Runnable {
     @GET
     @Path("/all")
     public Response getAll(){
-        List <ShortDescription> all = auctActiveRepository.all();
+        List<ShortDescription> all = auctActiveRepository.all();
         if(all!=null){
             return Response.ok(all).build();
         }
@@ -69,7 +62,7 @@ public class AuctionsActiveResource implements Runnable {
    @POST
    @Transactional
    public boolean addAuction(AuctionsActive auctionsActive){
-       AuctionsActive auction = new AuctionsActive(auctionsActive.getId(),LocalTime.parse("00:30:00"),auctionsActive.getStartingPrice(),auctionsActive.getReservePrice());
+       AuctionsActive auction = new AuctionsActive(auctionsActive.getId(),LocalTime.parse("00:30:00"),auctionsActive.getStartingPrice(),auctionsActive.getReservePrice(), auctionsActive.getSellerId());
        auctActiveRepository.persist(auction);
        if(auctActiveRepository.isPersistent(auction)){
            return true;
@@ -87,6 +80,7 @@ public class AuctionsActiveResource implements Runnable {
             bid.persist();
             boolean status= auctActiveRepository.addBid(aa,id,bid);
             if (status){
+                auctionBid.produce(bid,id);
                 return Response.status(200).build(); 
             }
             return Response.status(409).build(); 
@@ -108,8 +102,8 @@ public class AuctionsActiveResource implements Runnable {
     @Path("/teste/{id}")
     public Response teste(@PathParam("id") String id){
         AuctionsActive a = auctActiveRepository.findById(id);
-        LocalDateTime d= a.endAuction();
-        return Response.ok(d).build();
+        closeauction.produce(a.getId());
+        return Response.status(200).build();
     }
 
 
@@ -129,8 +123,8 @@ public class AuctionsActiveResource implements Runnable {
                 StartingInfo auction = message.getBody(StartingInfo.class);
                 System.out.println("auction: " + auction.toString());
                 if(auctActiveRepository.findById(auction.getAuctionId())==null){
-                    auctActiveRepository.newAuction(auction.getAuctionId(),auction.getDuration(),auction.getStartingPrice(),auction.getReservePrice());
-                    producer.produce(auction.getAuctionId());
+                    auctActiveRepository.newAuction(auction.getAuctionId(),auction.getDuration(),auction.getStartingPrice(),auction.getReservePrice(),auction.getSellerId());
+                    closeauction.produce(auction.getAuctionId());
                 }
             }
         } catch (Exception e) {

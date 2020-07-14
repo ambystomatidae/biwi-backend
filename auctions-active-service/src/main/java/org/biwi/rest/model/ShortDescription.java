@@ -1,4 +1,4 @@
-package org.biwi.rest;
+package org.biwi.rest.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
@@ -7,6 +7,8 @@ import java.time.LocalTime;
 import java.util.List;
 
 public class ShortDescription extends PanacheEntityBase {
+    public String auctionID;
+    public String sellerID;
     public String name;
     public double startingPrice;
     public LocalDateTime beginDate;
@@ -16,11 +18,14 @@ public class ShortDescription extends PanacheEntityBase {
     public List<String> categories;
 
 
+
     public ShortDescription(){
 
     }
 
-    public ShortDescription(String name, double startingPrice, LocalDateTime beginDate, String image, double actualPrice, LocalTime duration, List<String> categories) {
+    public ShortDescription(String auctionID, String sellerID, String name, double startingPrice, LocalDateTime beginDate, String image, double actualPrice, LocalTime duration, List<String> categories) {
+        this.auctionID = auctionID;
+        this.sellerID= sellerID;
         this.name = name;
         this.startingPrice = startingPrice;
         this.beginDate = beginDate;
@@ -28,6 +33,22 @@ public class ShortDescription extends PanacheEntityBase {
         this.actualPrice = actualPrice;
         this.duration = duration;
         this.categories = categories;
+    }
+
+    public String getAuctionID() {
+        return auctionID;
+    }
+
+    public void setAuctionID(String auctionID) {
+        this.auctionID = auctionID;
+    }
+
+    public String getSellerID() {
+        return sellerID;
+    }
+
+    public void setSellerID(String sellerID) {
+        this.sellerID = sellerID;
     }
 
     public String getName() {
