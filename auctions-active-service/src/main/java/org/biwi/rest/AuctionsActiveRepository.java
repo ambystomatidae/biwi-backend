@@ -44,7 +44,7 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
 
         AuctionsActive aa=this.findById(id);
         if(aa!=null){
-            if (Double.compare(aa.getLastBidValue(), value)  > 0 ){
+            if (Double.compare(aa.getLastBidValue(), value)  >= 0 ){
                 return null;
             }
             return aa;
