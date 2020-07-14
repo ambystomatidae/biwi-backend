@@ -11,17 +11,19 @@ public class ShortDescription {
     private String mainImage;
     private LocalTime duration;
     private List<String> categories;
+    private String sellerId;
 
     public ShortDescription() {
     }
 
-    public ShortDescription(String name, double startingPrice, LocalDateTime beginDate, String mainImage, LocalTime duration, List<String> categories) {
+    public ShortDescription(String name, double startingPrice, LocalDateTime beginDate, String mainImage, LocalTime duration, List<String> categories, String sellerId) {
         this.name = name;
         this.startingPrice = startingPrice;
         this.beginDate = beginDate;
         this.mainImage = mainImage;
         this.duration = duration;
         this.categories = categories;
+        this.sellerId = sellerId;
     }
 
     public String getName() {
@@ -70,5 +72,13 @@ public class ShortDescription {
 
     public void setCategories(List<String> categories) {
         this.categories = categories;
+    }
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
     }
 }

@@ -20,8 +20,10 @@ public class EventProducer {
             JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE);
             JMSProducer jp = context.createProducer();
             ObjectMessage om = context.createObjectMessage(msg);
-            om.setLongProperty("_AMQ_SCHED_DELIVERY", getDeliveryDelay(start));
+            long delay = getDeliveryDelay(start);
+            om.setLongProperty("_AMQ_SCHED_DELIVERY", delay);
             jp.send(context.createQueue("activateAuction"), om);
+            System.out.println("Delay: " + delay);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -35,8 +37,7 @@ public class EventProducer {
      */
     private static long getDeliveryDelay(LocalDateTime start) {
         ZonedDateTime zdt = start.atZone(ZoneId.of("Europe/London"));
-        ZonedDateTime toUtc = zdt.withZoneSameInstant(ZoneId.of("UTC"));
-        long startTime = toUtc.toInstant().toEpochMilli();
+        long startTime = zdt.toInstant().toEpochMilli();
         return startTime - System.currentTimeMillis();
     }
 }

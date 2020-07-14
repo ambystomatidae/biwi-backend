@@ -9,12 +9,14 @@ public class StartingInfoResponse {
     private double startingPrice;
     private double reservePrice;
     private LocalTime duration;
+    private String sellerId;
 
-    public StartingInfoResponse(String auctionId, double startingPrice, double reservePrice, LocalTime duration) {
+    public StartingInfoResponse(String auctionId, double startingPrice, double reservePrice, LocalTime duration, String sellerId) {
         this.auctionId = auctionId;
         this.startingPrice = startingPrice;
         this.reservePrice = reservePrice;
         this.duration = duration;
+        this.sellerId = sellerId;
     }
 
     public StartingInfoResponse(AuctionDescription ad) {
@@ -22,6 +24,7 @@ public class StartingInfoResponse {
         this.startingPrice = ad.getStartingPrice();
         this.reservePrice = ad.getReservePrice();
         this.duration = ad.getDuration();
+        this.sellerId = ad.getSellerId();
     }
 
     public String getAuctionId() {
@@ -54,5 +57,13 @@ public class StartingInfoResponse {
 
     public void setDuration(LocalTime duration) {
         this.duration = duration;
+    }
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
     }
 }
