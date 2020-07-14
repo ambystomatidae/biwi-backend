@@ -1,9 +1,7 @@
 package org.biwi.rest.resources;
 
 import org.biwi.rest.models.ClosedAuction;
-import org.biwi.rest.models.Score;
 import org.biwi.rest.repositories.ClosedAuctionsRepository;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -20,9 +18,6 @@ public class ClosedAuctionsResource {
 
     @Inject
     ClosedAuctionsRepository closedAuctionsRepository;
-
-    @Inject
-    JsonWebToken accessToken;
 
     @POST
     @Transactional
@@ -53,26 +48,6 @@ public class ClosedAuctionsResource {
         return Response.ok(auction).build();
     }
 
-    @POST
-    @Transactional
-    @RolesAllowed("user")
-    @Path("/review/{auctionId}")
-    public Response postAuctionRating(@PathParam("auctionId") String auctionId, Score score) {
-        if (!score.isValid())
-            return Response.status(400).build();
-
-        ClosedAuction auction = closedAuctionsRepository.findById(auctionId);
-
-        if (auction == null)
-            return Response.status(404).build();
-
-        if (!auction.isValidReviewer(accessToken.getName()))
-            return Response.status(403).build();
-
-        auction.classification = score.rating;
-
-        return Response.ok().build();
-    }
 
     @GET
     @RolesAllowed("user")

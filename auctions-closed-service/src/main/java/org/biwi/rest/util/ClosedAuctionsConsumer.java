@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 
@@ -50,7 +49,8 @@ public class ClosedAuctionsConsumer implements Runnable {
             while (true) {
                 Message message = consumer.receive();
                 if (message == null) return;
-                ClosedAuction auction = new ClosedAuction(requestsHandler.getAuctionData(message.getBody(String.class)));
+                String auctionId = message.getBody(String.class);
+                ClosedAuction auction = new ClosedAuction(auctionId, requestsHandler.getAuctionData(auctionId));
                 closedAuctionsRepository.persistAuction(auction);
                 requestsHandler.removeAuction(auction.id);
             }
