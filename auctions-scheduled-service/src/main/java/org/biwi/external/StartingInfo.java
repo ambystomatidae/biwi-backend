@@ -8,15 +8,17 @@ public class StartingInfo implements Serializable {
     private double startingPrice;
     private double reservePrice;
     private LocalTime duration;
+    private String sellerId;
 
     public StartingInfo() {
     }
 
-    public StartingInfo(String auctionId, double startingPrice, double reservePrice, LocalTime duration) {
+    public StartingInfo(String auctionId, double startingPrice, double reservePrice, LocalTime duration, String sellerId) {
         this.auctionId = auctionId;
         this.startingPrice = startingPrice;
         this.reservePrice = reservePrice;
         this.duration = duration;
+        this.sellerId = sellerId;
     }
 
     public String getAuctionId() {
@@ -49,5 +51,13 @@ public class StartingInfo implements Serializable {
 
     public void setDuration(LocalTime duration) {
         this.duration = duration;
+    }
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
     }
 }
