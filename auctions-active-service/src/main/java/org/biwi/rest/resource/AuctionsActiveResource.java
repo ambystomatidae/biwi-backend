@@ -137,8 +137,8 @@ public class AuctionsActiveResource implements Runnable {
                 StartingInfo auction = message.getBody(StartingInfo.class);
                 System.out.println("auction: " + auction.toString());
                 if(auctActiveRepository.findById(auction.getAuctionId())==null){
-                    auctActiveRepository.newAuction(auction.getAuctionId(),auction.getDuration(),auction.getStartingPrice(),auction.getReservePrice(),auction.getSellerId());
-                    prepareToClose.produce(auction.getAuctionId());
+                    AuctionsActive aa= auctActiveRepository.newAuction(auction.getAuctionId(),auction.getDuration(),auction.getStartingPrice(),auction.getReservePrice(),auction.getSellerId());
+                    prepareToClose.produce(aa.getId(),aa.getEndTimeAuction());
                 }
             }
         } catch (Exception e) {
