@@ -9,6 +9,9 @@ import org.quartz.JobExecutionException;
 import javax.inject.Inject;
 import javax.jms.*;
 
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
 public class PrepareToCloseProducer {
 
     @Inject

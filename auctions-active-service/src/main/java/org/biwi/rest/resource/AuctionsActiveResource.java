@@ -117,7 +117,6 @@ public class AuctionsActiveResource implements Runnable {
     @Path("/teste/{id}")
     public Response teste(@PathParam("id") String id){
         AuctionsActive a = auctActiveRepository.findById(id);
-        closeauction.produce(a.getId());
         return Response.status(200).build();
     }
 

@@ -36,7 +36,7 @@ public class ScheduledAuctionRequest {
     }
 
     public ScheduledAuctionRequest() {
-        
+
     }
 
     public String getAuctionId() {
