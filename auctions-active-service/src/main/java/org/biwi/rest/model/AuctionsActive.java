@@ -120,13 +120,11 @@ public class AuctionsActive extends PanacheEntityBase {
     }
 
     @JsonIgnore
-    public LocalDateTime endAuction(){
+    public LocalDateTime getEndTimeAuction(){
         LocalTime t= this.duration;
         LocalDateTime nw= LocalDateTime.now();
         LocalDateTime end= nw.plusHours(t.getHour()).plusMinutes(t.getMinute()).plusSeconds(t.getSecond()).plusNanos(t.getNano());
         System.out.println(end);
         return end;
-
     }
-
 }

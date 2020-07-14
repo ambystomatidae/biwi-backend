@@ -2,6 +2,8 @@ package org.biwi.rest.resource;
 
 
 
+import io.quarkus.runtime.ShutdownEvent;
+import io.quarkus.runtime.StartupEvent;
 import org.biwi.rest.model.Bid;
 import org.biwi.rest.model.ShortDescription;
 import org.biwi.rest.producer.*;
@@ -9,6 +11,7 @@ import org.biwi.rest.*;
 import org.biwi.external.*;
 import org.biwi.rest.model.AuctionsActive;
 
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.*;
 import javax.transaction.Transactional;
@@ -16,6 +19,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.ws.rs.core.Response;
 
@@ -31,12 +36,22 @@ public class AuctionsActiveResource implements Runnable {
     ConnectionFactory connectionFactory;
 
     @Inject
-    CloseAuctionProducer closeauction;
+    PrepareToCloseProducer prepareToClose;
+
+
 
     @Inject
     AuctionBidProducer auctionBid;
 
+    private final ExecutorService scheduler = Executors.newSingleThreadExecutor();
 
+    void onStart(@Observes StartupEvent ev) {
+        scheduler.submit(this);
+    }
+
+    void onStop(@Observes ShutdownEvent ev) {
+        scheduler.shutdown();
+    }
 
     @GET
     @Path("/{id}")
@@ -124,7 +139,7 @@ public class AuctionsActiveResource implements Runnable {
                 System.out.println("auction: " + auction.toString());
                 if(auctActiveRepository.findById(auction.getAuctionId())==null){
                     auctActiveRepository.newAuction(auction.getAuctionId(),auction.getDuration(),auction.getStartingPrice(),auction.getReservePrice(),auction.getSellerId());
-                    closeauction.produce(auction.getAuctionId());
+                    prepareToClose.produce(auction.getAuctionId());
                 }
             }
         } catch (Exception e) {

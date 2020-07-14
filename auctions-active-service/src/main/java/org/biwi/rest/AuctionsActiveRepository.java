@@ -24,6 +24,7 @@ import static org.quartz.DateBuilder.*:
 @ApplicationScoped
 public class AuctionsActiveRepository implements PanacheRepository<AuctionsActive> {
 
+
     @Transactional
     public AuctionsActive findById(String id){
 
@@ -75,13 +76,16 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
         AuctionsActive aa = new AuctionsActive(id,duration,startingPrice,reservePrice,sellerID);
         if(this.findById(id) ==null){
             persist(aa);
-            System.out.println();
-            addCronometer(aa);
         }
     }
 
-    private void addCronometer(AuctionsActive aa) {
-        //TODO
+    public LocalDateTime closeAuction(String id) {
+        AuctionsActive aa = this.findById(id);
+        if(aa!= null){
+            aa.setOpen(false);
+            return aa.getEndTimeAuction();
+        }
+        return null;
     }
 
 
