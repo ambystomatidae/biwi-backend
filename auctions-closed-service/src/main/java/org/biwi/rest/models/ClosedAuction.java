@@ -1,7 +1,6 @@
 package org.biwi.rest.models;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import io.vertx.core.json.JsonObject;
 import org.jose4j.json.internal.json_simple.JSONObject;
 
 import javax.persistence.Entity;
@@ -18,7 +17,6 @@ public class ClosedAuction extends PanacheEntityBase {
     public List<Integer> bids;
     public String winnerId;
     public String sellerId;
-    public Double classification;
 
     public ClosedAuction() {
     }
@@ -38,7 +36,6 @@ public class ClosedAuction extends PanacheEntityBase {
                 ", bids=" + bids +
                 ", winnerId='" + winnerId + '\'' +
                 ", selledId='" + sellerId + '\'' +
-                ", classification=" + classification +
                 '}';
     }
 }
