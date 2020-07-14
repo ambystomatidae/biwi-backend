@@ -39,7 +39,7 @@ public class PrepareToCloseProducer {
      * @return millis until the message is supposed to be delivered
      */
     private static long getDeliveryDelay(LocalDateTime start) {
-        ZonedDateTime zdt = start.atZone(ZoneId.of("Europe/London"));
+        ZonedDateTime zdt = start.atZone(ZoneId.of("UTC"));
         return zdt.toInstant().toEpochMilli();
     }
 
