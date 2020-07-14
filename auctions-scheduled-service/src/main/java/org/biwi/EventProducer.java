@@ -37,7 +37,6 @@ public class EventProducer {
      */
     private static long getDeliveryDelay(LocalDateTime start) {
         ZonedDateTime zdt = start.atZone(ZoneId.of("Europe/London"));
-        long startTime = zdt.toInstant().toEpochMilli();
-        return startTime - System.currentTimeMillis();
+        return zdt.toInstant().toEpochMilli();
     }
 }
