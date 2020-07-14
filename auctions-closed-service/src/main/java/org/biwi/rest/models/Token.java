@@ -34,7 +34,4 @@ public class Token {
                 '}';
     }
 
-    public boolean isValidRefresh() {
-        return refresh_token != null;
-    }
 }

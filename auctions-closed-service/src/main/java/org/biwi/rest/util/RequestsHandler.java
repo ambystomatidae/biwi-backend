@@ -43,6 +43,10 @@ public class RequestsHandler {
 
     String getPath = ConfigProvider.getConfig().getValue("active-auctions.service.get-auction.path", String.class);
 
+    String userServiceUrl = ConfigProvider.getConfig().getValue("user.service.url", String.class);
+
+    String watchlistPath = ConfigProvider.getConfig().getValue("user.service.watchlist.path", String.class);
+
     String removePath = ConfigProvider.getConfig().getValue("active-auctions.service.remove-auction.path", String.class);
 
     String tokenServiceUrl = ConfigProvider.getConfig().getValue("keycloak.token.service", String.class);
@@ -85,16 +89,16 @@ public class RequestsHandler {
         return (JSONObject) js.parse(response);
     }
 
-    public String removeAuction(String auctionId) throws IOException, AuthenticationException, ParseException {
+    public void removeAuction(String auctionId) throws IOException, AuthenticationException, ParseException {
         String token = getAdminToken();
         HttpClient client = HttpClients.createDefault();
-        HttpDelete httpDelete = new HttpDelete(activeAuctionsServiceUrl + "/" + removePath + "/" + auctionId);
+        HttpDelete deleteFromActive = new HttpDelete(activeAuctionsServiceUrl + "/" + removePath + "/" + auctionId);
+        HttpDelete deleteFromWatchlist = new HttpDelete(userServiceUrl + "/" + watchlistPath + "/" + auctionId);
+        deleteFromActive.addHeader("Authorization", "Bearer " + token);
+        deleteFromWatchlist.addHeader("Authorization", "Bearer " + token);
 
-        httpDelete.addHeader("Authorization", "Bearer " + token);
-
-        HttpResponse httpResponse = client.execute(httpDelete);
-
-        return new BasicResponseHandler().handleResponse(httpResponse);
+        HttpResponse httpResponse = client.execute(deleteFromActive);
+        HttpResponse httpResponse2 = client.execute(deleteFromWatchlist);
     }
 
     public JSONObject getToken(String username, String password) throws IOException, AuthenticationException, ParseException {
