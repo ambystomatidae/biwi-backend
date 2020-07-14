@@ -21,7 +21,6 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.*;
 
 @Path("/v1")
 @Produces(MediaType.APPLICATION_JSON)
@@ -29,22 +28,39 @@ import java.util.concurrent.*;
 @RequestScoped
 public class AuctionDescriptionResource {
 
+    /**
+     * Repository to manage ORM
+     */
     @Inject
     AuctionDescriptionRepository repository;
 
+    /**
+     * Bean to upload images to GCloud
+     */
     @Inject
     BucketManager bucketManager;
 
+    /**
+     * External service, used to schedule a new auction
+     */
     @Inject
     @RestClient
     AuctionsScheduledService scheduledService;
 
+    /**
+     * @param auctionId id of the auction to retrieve
+     * @return returns the full description of the auction
+     */
     @GET
     @Path("/{auctionId}")
     public AuctionDescription getFull(@PathParam("auctionId") String auctionId) {
         return repository.getAuctionDescription(auctionId);
     }
 
+    /**
+     * @param auctionId id of the auction to retrieve
+     * @return returns the shortened description of the auction (if exists)
+     */
     @GET
     @Path("/{auctionId}/short")
     public Response getShort(@PathParam("auctionId") String auctionId) {
@@ -55,6 +71,10 @@ public class AuctionDescriptionResource {
             return Response.status(404).build();
     }
 
+    /**
+     * @param desc Request that contains info necessary to create a new AuctionDescription
+     * @return What is stored as auction description
+     */
     @POST
     public Response add(AuctionDescriptionPostRequest desc) {
         AuctionDescription ad = new AuctionDescription(desc);

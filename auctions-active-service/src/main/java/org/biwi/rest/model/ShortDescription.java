@@ -7,12 +7,12 @@ import java.time.LocalTime;
 import java.util.List;
 
 public class ShortDescription {
-    public String auctionID;
-    public String sellerID;
+    public String auctionId;
+    public String sellerId;
     public String name;
     public double startingPrice;
     public LocalDateTime beginDate;
-    public String image;
+    public String mainImage;
     public double actualPrice;
     public LocalTime duration;
     public List<String> categories;
@@ -22,32 +22,32 @@ public class ShortDescription {
     public ShortDescription(){
     }
 
-    public ShortDescription(String auctionID, String sellerID, String name, double startingPrice, LocalDateTime beginDate, String image, double actualPrice, LocalTime duration, List<String> categories) {
-        this.auctionID = auctionID;
-        this.sellerID= sellerID;
+    public ShortDescription(String auctionId, String sellerId, String name, double startingPrice, LocalDateTime beginDate, String mainImage, double actualPrice, LocalTime duration, List<String> categories) {
+        this.auctionId = auctionId;
+        this.sellerId = sellerId;
         this.name = name;
         this.startingPrice = startingPrice;
         this.beginDate = beginDate;
-        this.image = image;
+        this.mainImage = mainImage;
         this.actualPrice = actualPrice;
         this.duration = duration;
         this.categories = categories;
     }
 
-    public String getAuctionID() {
-        return auctionID;
+    public String getAuctionId() {
+        return auctionId;
     }
 
-    public void setAuctionID(String auctionID) {
-        this.auctionID = auctionID;
+    public void setAuctionId(String auctionId) {
+        this.auctionId = auctionId;
     }
 
-    public String getSellerID() {
-        return sellerID;
+    public String getSellerId() {
+        return sellerId;
     }
 
-    public void setSellerID(String sellerID) {
-        this.sellerID = sellerID;
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
     }
 
     public String getName() {
@@ -74,12 +74,12 @@ public class ShortDescription {
         this.beginDate = beginDate;
     }
 
-    public String getImage() {
-        return image;
+    public String getMainImage() {
+        return mainImage;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setMainImage(String mainImage) {
+        this.mainImage = mainImage;
     }
 
     public double getActualPrice() {
