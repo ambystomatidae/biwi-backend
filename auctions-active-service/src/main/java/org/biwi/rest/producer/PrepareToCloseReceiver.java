@@ -53,7 +53,7 @@ public class PrepareToCloseReceiver implements Runnable {
                 if (message == null) return;
                 String id = message.getBody(String.class);
                 LocalDateTime end= aaRepository.closeAuction(id);
-                closeActionProducer.produce(id,end);
+                closeActionProducer.produce(id);
             }
         } catch (JMSException e) {
             throw new RuntimeException(e);

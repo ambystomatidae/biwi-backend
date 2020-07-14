@@ -14,18 +14,14 @@ public class CloseAuctionProducer {
     @Inject
     ConnectionFactory connectionFactory;
 
-    public void produce(String id, LocalDateTime start) {
+    public void produce(String id) {
         try {
             JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE);
             JMSProducer jp = context.createProducer();
-            ObjectMessage om = context.createObjectMessage(id);
-            long delay = getDeliveryDelay(start);
-            om.setLongProperty("_AMQ_SCHED_DELIVERY", delay);
-            jp.send(context.createQueue("closeAuction"), om);
+            jp.send(context.createQueue("closeAuction"), id);
         }
         catch (Exception e) {
             e.printStackTrace();
-
         }
     }
 

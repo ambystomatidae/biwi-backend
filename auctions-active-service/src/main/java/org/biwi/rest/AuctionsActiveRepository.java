@@ -72,11 +72,12 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
     }
 
     @Transactional
-    public void newAuction(String id, LocalTime duration, double startingPrice,double reservePrice,String sellerID){
+    public AuctionsActive newAuction(String id, LocalTime duration, double startingPrice,double reservePrice,String sellerID){
         AuctionsActive aa = new AuctionsActive(id,duration,startingPrice,reservePrice,sellerID);
         if(this.findById(id) ==null){
             persist(aa);
         }
+        return aa;
     }
 
     public LocalDateTime closeAuction(String id) {
@@ -86,13 +87,6 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
             return aa.getEndTimeAuction();
         }
         return null;
-    }
-
-
-    private Date toDate(LocalDateTime dt){
-        Date out= Date.from(dt.atZone(ZoneId.systemDefault()).toInstant());
-        System.out.println(out);
-        return out;
     }
 
 
