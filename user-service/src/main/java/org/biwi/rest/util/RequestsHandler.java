@@ -95,17 +95,19 @@ public class RequestsHandler {
         JSONArray credentialsArray = new JSONArray();
         JSONObject credentials = new JSONObject();
         credentials.put("type", "password");
-        credentials.put("value", user.credentials.password);
+        credentials.put("value", user.password);
         credentials.put("temporary", false);
         credentialsArray.add(credentials);
         credentialsArray.add(credentials);
 
         JSONObject json = new JSONObject();
-        json.put("username", user.credentials.username);
-        json.put("email", user.credentials.email);
+        json.put("email", user.email);
         json.put("emailVerified", false);
         json.put("enabled", true);
         json.put("credentials", credentialsArray);
+        json.put("username", user.email);
+        json.put("firstName", user.firstName);
+        json.put("lastName", user.lastName);
 
         StringEntity params = new StringEntity(json.toString());
         httpPost.addHeader("content-type", "application/json");

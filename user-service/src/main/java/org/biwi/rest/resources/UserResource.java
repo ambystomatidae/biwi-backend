@@ -68,17 +68,25 @@ public class UserResource {
             String[] parsed = location.split("/");
             String id = parsed[parsed.length - 1];
             requestsHandler.updateUsername(id);
-            userRepository.persist(new BiwiUser(id, user.credentials.username, user.credentials.email));
+            userRepository.persist(new BiwiUser(id, user.email));
             return Response.created(URI.create(version + "/" + id)).build();
         } catch (Exception e) {
             return Response.status(409).entity(e.getMessage()).build();
         }
     }
 
+
+    @GET
+    @RolesAllowed("viewUsers")
+    @Path("/user")
+    public Response getCurrentUser() throws IOException, ParseException {
+        return getUserById(accessToken.getName());
+    }
+
     @GET
     @RolesAllowed("viewUsers")
     @Path("/user/{userId}")
-    public Response getUser(@PathParam("userId") String userId) throws IOException, ParseException {
+    public Response getUserById(@PathParam("userId") String userId) throws IOException, ParseException {
         String token = accessToken.getRawToken();
         BiwiUser user = userRepository.findById(userId);
 
@@ -93,41 +101,51 @@ public class UserResource {
 
     @GET
     @RolesAllowed("user")
-    @Path("user/watchlist/{userId}")
-    public Response getUserWatchlist(@PathParam("userId") String userId) {
-        BiwiUser persistedUser = userRepository.findById(userId);
-
-        if (persistedUser == null)
-            return Response.status(404).build();
-
-        if (!persistedUser.id.equals(accessToken.getName()))
-            return Response.status(403).build();
+    @Path("user/watchlist")
+    public Response getUserWatchlist() {
+        BiwiUser persistedUser = userRepository.findById(accessToken.getName());
 
         return Response.ok(persistedUser.watchlist).build();
-
     }
 
     @POST
     @Transactional
     @RolesAllowed("user")
-    @Path("user/watchlist/{userId}")
-    public Response addToUserWatchList(@PathParam("userId") String userId, Auction auction) throws ParseException, IOException, AuthenticationException {
-        if (!auction.isValid() || !requestsHandler.isActiveAuction(auction))
-            return Response.status(400).build();
+    @Path("user/watchlist")
+    public Response addToUserWatchList(Auction auction) throws ParseException, IOException, AuthenticationException {
+        /*if (!auction.isValid() || !requestsHandler.isActiveAuction(auction))
+            return Response.status(400).build();*/
 
-        BiwiUser persistedUser = userRepository.findById(userId);
-
-        if (persistedUser == null)
-            return Response.status(404).build();
+        BiwiUser persistedUser = userRepository.findById(accessToken.getName());
 
         if (persistedUser.watchlist.contains(auction))
             return Response.status(409).entity("{\"errorMessage\": \"Auction already in watchlist\"}").build();
 
-        if (!persistedUser.id.equals(accessToken.getName()))
-            return Response.status(403).build();
-
         persistedUser.addToWatchlist(auction);
         return Response.ok(persistedUser.watchlist).build();
+    }
+
+    @DELETE
+    @Transactional
+    @RolesAllowed("user")
+    @Path("user/watchlist")
+    public Response removeFromWatchlist(Auction auction){
+        BiwiUser persistedUser = userRepository.findById(accessToken.getName());
+
+        if (!persistedUser.watchlist.contains(auction))
+            return Response.status(409).entity("{\"errorMessage\": \"Auction not in watchlist\"}").build();
+
+        persistedUser.removeFromWatchlist(auction);
+        return Response.ok(persistedUser.watchlist).build();
+    }
+
+    @DELETE
+    @Transactional
+    @RolesAllowed("admin")
+    @Path("/watchlist")
+    public Response removeFromAllWatchlists(Auction auction) {
+        userRepository.removeFromWatchlist(auction);
+        return Response.ok().build();
     }
 
     @POST
@@ -138,7 +156,7 @@ public class UserResource {
         if (!score.isValid())
             return Response.status(400).build();
 
-        if(!requestsHandler.isValidReview(accessToken.getName(), userId, score.auctionId))
+        if (!requestsHandler.isValidReview(accessToken.getName(), userId, score.auctionId))
             return Response.status(403).build();
 
         BiwiUser persistedUser = userRepository.findById(userId);
@@ -149,6 +167,7 @@ public class UserResource {
         persistedUser.addToScore(score);
         return Response.ok().build();
     }
+
 
     @POST
     @Transactional
@@ -181,6 +200,8 @@ public class UserResource {
             this.username = identity.getPrincipal().getName();
         }
     }
+
+
 
     /*
     @POST
