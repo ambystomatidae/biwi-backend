@@ -1,7 +1,5 @@
-package org.biwi;
-
-import org.biwi.external.StartingInfo;
-
+package org.biwi.rest.producer;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.jms.*;
@@ -9,21 +7,21 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-@RequestScoped
-public class EventProducer {
+
+@ApplicationScoped
+public class CloseAuctionProducer {
 
     @Inject
     ConnectionFactory connectionFactory;
 
-    public void produce(StartingInfo msg, LocalDateTime start) {
+    public void produce(String id, LocalDateTime start) {
         try {
             JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE);
             JMSProducer jp = context.createProducer();
-            ObjectMessage om = context.createObjectMessage(msg);
+            ObjectMessage om = context.createObjectMessage(id);
             long delay = getDeliveryDelay(start);
             om.setLongProperty("_AMQ_SCHED_DELIVERY", delay);
-            jp.send(context.createQueue("activateAuction"), om);
-            System.out.println("Delay: " + delay);
+            jp.send(context.createQueue("closeAuction"), om);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -37,6 +35,7 @@ public class EventProducer {
      */
     private static long getDeliveryDelay(LocalDateTime start) {
         ZonedDateTime zdt = start.atZone(ZoneId.of("Europe/London"));
-        return zdt.toInstant().toEpochMilli();
+        long startTime = zdt.toInstant().toEpochMilli();
+        return startTime - System.currentTimeMillis();
     }
 }

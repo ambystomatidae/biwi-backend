@@ -22,7 +22,7 @@ public class ClosedAuction extends PanacheEntityBase {
     }
 
     public ClosedAuction(JSONObject json) {
-        System.out.println("PROGRAMAR ESTE METODO");
+        this.id = "qualquer coisa";
     }
 
     public boolean isValidReviewer(String userId) {

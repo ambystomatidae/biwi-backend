@@ -1,5 +1,7 @@
 package org.biwi.rest;
 
+import org.biwi.rest.external.AuctionsScheduledService;
+import org.biwi.rest.external.ScheduledAuctionRequest;
 import org.biwi.rest.models.AuctionDescription;
 import org.biwi.rest.requests.AuctionDescriptionPostRequest;
 import org.biwi.rest.requests.GetAllDescriptions;
@@ -8,6 +10,8 @@ import org.biwi.rest.responses.StartingInfoResponse;
 import org.biwi.rest.repositories.AuctionDescriptionRepository;
 import org.biwi.rest.services.BucketManager;
 import org.biwi.rest.services.ImageEncoderUtil;
+import org.eclipse.microprofile.context.ManagedExecutor;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -17,6 +21,7 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.*;
 
 @Path("/v1")
 @Produces(MediaType.APPLICATION_JSON)
@@ -29,6 +34,10 @@ public class AuctionDescriptionResource {
 
     @Inject
     BucketManager bucketManager;
+
+    @Inject
+    @RestClient
+    AuctionsScheduledService scheduledService;
 
     @GET
     @Path("/{auctionId}")
@@ -60,6 +69,8 @@ public class AuctionDescriptionResource {
         }
         ad.setImages(imgs);
         boolean success = repository.add(ad);
+        Response r = scheduledService.schedule(new ScheduledAuctionRequest(ad));
+        System.out.println("Status: " + r.getStatus());
         if (success)
             return Response.ok(ad).build();
         else

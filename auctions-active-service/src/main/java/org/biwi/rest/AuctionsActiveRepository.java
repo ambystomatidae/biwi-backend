@@ -1,5 +1,9 @@
 package org.biwi.rest;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import org.biwi.rest.model.AuctionsActive;
+import org.biwi.rest.model.Bid;
+import org.biwi.rest.model.ShortDescription;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -15,11 +19,11 @@ import static org.quartz.TriggerBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.*;
 import static org.quartz.DateBuilder.*:
 */
- */
 
 
 @ApplicationScoped
 public class AuctionsActiveRepository implements PanacheRepository<AuctionsActive> {
+
 
     @Transactional
     public AuctionsActive findById(String id){
@@ -68,17 +72,20 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
     }
 
     @Transactional
-    public void newAuction(String id, LocalTime duration, double startingPrice,double reservePrice){
-        AuctionsActive aa = new AuctionsActive(id,duration,startingPrice,reservePrice);
+    public void newAuction(String id, LocalTime duration, double startingPrice,double reservePrice,String sellerID){
+        AuctionsActive aa = new AuctionsActive(id,duration,startingPrice,reservePrice,sellerID);
         if(this.findById(id) ==null){
             persist(aa);
-            System.out.println();
-            addCronometer(aa);
         }
     }
 
-    private void addCronometer(AuctionsActive aa) {
-        //TODO
+    public LocalDateTime closeAuction(String id) {
+        AuctionsActive aa = this.findById(id);
+        if(aa!= null){
+            aa.setOpen(false);
+            return aa.getEndTimeAuction();
+        }
+        return null;
     }
 
 

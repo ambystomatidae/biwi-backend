@@ -1,6 +1,18 @@
 DROP DATABASE IF EXISTS scheduleddb;
 DROP DATABASE IF EXISTS biwidesc;
+DROP DATABASE IF EXISTS biwiuser;
+DROP DATABASE IF EXISTS biwi_categories;
+DROP DATABASE IF EXISTS auctionsactive;
+DROP DATABASE IF EXISTS auctionsclosed;
+CREATE DATABASE biwi_categories;
+CREATE DATABASE biwiuser;
 CREATE DATABASE scheduleddb;
 CREATE DATABASE biwidesc;
+CREATE DATABASE auctionsactive;
+CREATE DATABASE auctionsclosed;
 GRANT ALL PRIVILEGES ON DATABASE scheduleddb TO hibernate;
 GRANT ALL PRIVILEGES ON DATABASE biwidesc TO hibernate;
+GRANT ALL PRIVILEGES ON DATABASE biwiuser TO hibernate;
+GRANT ALL PRIVILEGES ON DATABASE biwi_categories TO hibernate;
+GRANT ALL PRIVILEGES ON DATABASE auctionsactive TO hibernate;
+GRANT ALL PRIVILEGES ON DATABASE auctionsclosed TO hibernate;

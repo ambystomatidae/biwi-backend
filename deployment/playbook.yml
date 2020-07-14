@@ -48,9 +48,19 @@
         state: directory
         mode: u=r
     - name: Copy sql files to all hosts
-      template:
+      copy:
         src: "roles/services/templates/initdbs.sql"
         dest: "/opt/postgresql/sql/initdbs.sql"
+        force: yes
+    - name: Create keycloak directory
+      file:
+        path: /opt/keycloak
+        state: directory
+        mode: u=r
+    - name: Copy keycloak conf file to all hosts
+      copy:
+        src: "roles/services/templates/biwi_realm.json"
+        dest: "/opt/keycloak/biwi_realm.json"
 
 - hosts:
   - machine-1

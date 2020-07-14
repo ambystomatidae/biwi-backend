@@ -10,7 +10,9 @@ import org.biwi.requests.Filter;
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RequestScoped
 public class ScheduledAuctionRepository implements PanacheRepository<ScheduledAuction> {
@@ -61,7 +63,7 @@ public class ScheduledAuctionRepository implements PanacheRepository<ScheduledAu
      * @return List of scheduled auctions that meet given criteria
      */
     public List<ScheduledAuction> getAll(int pageSize, int page, Filter filter, String sortBy) {
-        LocalDateTime startFilter = LocalDateTime.now();
+        LocalDateTime startFilter = LocalDateTime.now().plusHours(1);
         PanacheQuery<ScheduledAuction> query;
         if (filter != null && filter.byPrice()) {
             double lower = filter.getLowerPrice() != null ? filter.getLowerPrice() : 0;

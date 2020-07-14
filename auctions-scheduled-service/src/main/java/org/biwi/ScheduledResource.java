@@ -6,6 +6,7 @@ import org.biwi.external.AuctionsDescriptionService;
 import org.biwi.requests.AllStartingRequestObject;
 import org.biwi.models.ScheduledAuction;
 import org.biwi.requests.Filter;
+import org.biwi.requests.ScheduledAuctionRequest;
 import org.biwi.requests.StartingSoonRequestObject;
 import org.biwi.repositories.ScheduledAuctionRepository;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -41,17 +42,25 @@ public class ScheduledResource {
     @POST
     @Path("schedule")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response schedule(ScheduledAuction auc) {
-        StartingInfo si = auctionsDescriptionService.getStartingInfo(auc.getAuctionId());
-        if (si == null)
-            return Response.status(404).build();
+    public Response schedule(ScheduledAuctionRequest auc) {
+        ScheduledAuction ac = new ScheduledAuction();
+        ac.setAuctionId(auc.getAuctionId());
+        ac.setBeginDate(auc.getBeginDate());
+        ac.setStartingPrice(auc.getStartingPrice());
+        ac.setCategories(auc.getCategories());
         try {
-            repository.addScheduled(auc);
+            repository.addScheduled(ac);
         }
         catch (Exception e) {
             // duplicate key
             return Response.status(403).build();
         }
+        StartingInfo si = new StartingInfo();
+        si.setAuctionId(auc.getAuctionId());
+        si.setStartingPrice(auc.getStartingPrice());
+        si.setReservePrice(auc.getReservePrice());
+        si.setDuration(auc.getDuration());
+        si.setSellerId(auc.getSellerId());
         producer.produce(si, auc.getBeginDate());
         return Response.ok(si).build();
     }

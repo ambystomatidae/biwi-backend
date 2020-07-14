@@ -1,21 +1,26 @@
-package org.biwi.external;
+package org.biwi.requests;
 
-import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
-public class StartingInfo implements Serializable {
+public class ScheduledAuctionRequest {
     private String auctionId;
+    private LocalDateTime beginDate;
     private double startingPrice;
+    private List<String> categories;
     private double reservePrice;
     private LocalTime duration;
     private String sellerId;
 
-    public StartingInfo() {
+    public ScheduledAuctionRequest() {
     }
 
-    public StartingInfo(String auctionId, double startingPrice, double reservePrice, LocalTime duration, String sellerId) {
+    public ScheduledAuctionRequest(String auctionId, LocalDateTime beginDate, double startingPrice, List<String> categories, double reservePrice, LocalTime duration, String sellerId) {
         this.auctionId = auctionId;
+        this.beginDate = beginDate;
         this.startingPrice = startingPrice;
+        this.categories = categories;
         this.reservePrice = reservePrice;
         this.duration = duration;
         this.sellerId = sellerId;
@@ -29,12 +34,28 @@ public class StartingInfo implements Serializable {
         this.auctionId = auctionId;
     }
 
+    public LocalDateTime getBeginDate() {
+        return beginDate;
+    }
+
+    public void setBeginDate(LocalDateTime beginDate) {
+        this.beginDate = beginDate;
+    }
+
     public double getStartingPrice() {
         return startingPrice;
     }
 
     public void setStartingPrice(double startingPrice) {
         this.startingPrice = startingPrice;
+    }
+
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
     }
 
     public double getReservePrice() {

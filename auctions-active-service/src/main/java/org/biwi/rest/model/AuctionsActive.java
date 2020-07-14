@@ -1,7 +1,8 @@
-package org.biwi.rest;
+package org.biwi.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -18,20 +19,24 @@ public class AuctionsActive extends PanacheEntityBase {
     private double reservePrice;
     @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Bid> bids;
+    private String sellerId;
+    @JsonIgnore
     private boolean open;
+
 
     public AuctionsActive(){
         this.bids = new ArrayList();
         this.open=true;
     }
 
-    public AuctionsActive(String id, LocalTime duration, double startingPrice,double reservePrice){
+    public AuctionsActive(String id, LocalTime duration, double startingPrice,double reservePrice, String sellerId){
         this.id = id;
         this.duration =duration;
         this.startingPrice = startingPrice;
         this.reservePrice = reservePrice;
         this.bids = new ArrayList();
         this.open=true;
+        this.sellerId=sellerId;
     }
 
     public String getId() {
@@ -80,6 +85,23 @@ public class AuctionsActive extends PanacheEntityBase {
 
     }
 
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
+        System.out.println(open);
+    }
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
+    }
+
     @JsonIgnore
     public Bid getLastBid(){
         int size=this.bids.size();
@@ -97,23 +119,12 @@ public class AuctionsActive extends PanacheEntityBase {
         return this.startingPrice;
     }
 
-    public boolean isOpen() {
-        return open;
-    }
-
-    public void setOpen(boolean open) {
-        this.open = open;
-        System.out.println(open);
-    }
-
     @JsonIgnore
-    public LocalDateTime endAuction(){
+    public LocalDateTime getEndTimeAuction(){
         LocalTime t= this.duration;
         LocalDateTime nw= LocalDateTime.now();
         LocalDateTime end= nw.plusHours(t.getHour()).plusMinutes(t.getMinute()).plusSeconds(t.getSecond()).plusNanos(t.getNano());
         System.out.println(end);
         return end;
-
     }
-
 }

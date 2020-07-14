@@ -1,9 +1,15 @@
 package org.biwi.rest.resource;
 
 
+
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
+import org.biwi.rest.model.Bid;
+import org.biwi.rest.model.ShortDescription;
+import org.biwi.rest.producer.*;
 import org.biwi.rest.*;
+import org.biwi.external.*;
+import org.biwi.rest.model.AuctionsActive;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -11,13 +17,12 @@ import javax.jms.*;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.ws.rs.core.Response;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 @Path("/active")
 @Produces(MediaType.APPLICATION_JSON)
@@ -30,12 +35,20 @@ public class AuctionsActiveResource implements Runnable {
     @Inject
     ConnectionFactory connectionFactory;
 
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    @Inject
+    PrepareToCloseProducer prepareToClose;
 
+
+
+    @Inject
+    AuctionBidProducer auctionBid;
+
+    private final ExecutorService scheduler = Executors.newSingleThreadExecutor();
 
     void onStart(@Observes StartupEvent ev) {
         scheduler.submit(this);
     }
+
     void onStop(@Observes ShutdownEvent ev) {
         scheduler.shutdown();
     }
@@ -53,7 +66,7 @@ public class AuctionsActiveResource implements Runnable {
     @GET
     @Path("/all")
     public Response getAll(){
-        List <ShortDescription> all = auctActiveRepository.all();
+        List<ShortDescription> all = auctActiveRepository.all();
         if(all!=null){
             return Response.ok(all).build();
         }
@@ -64,7 +77,7 @@ public class AuctionsActiveResource implements Runnable {
    @POST
    @Transactional
    public boolean addAuction(AuctionsActive auctionsActive){
-       AuctionsActive auction = new AuctionsActive(auctionsActive.getId(),LocalTime.parse("00:30:00"),auctionsActive.getStartingPrice(),auctionsActive.getReservePrice());
+       AuctionsActive auction = new AuctionsActive(auctionsActive.getId(),LocalTime.parse("00:30:00"),auctionsActive.getStartingPrice(),auctionsActive.getReservePrice(), auctionsActive.getSellerId());
        auctActiveRepository.persist(auction);
        if(auctActiveRepository.isPersistent(auction)){
            return true;
@@ -82,6 +95,7 @@ public class AuctionsActiveResource implements Runnable {
             bid.persist();
             boolean status= auctActiveRepository.addBid(aa,id,bid);
             if (status){
+                auctionBid.produce(bid,id);
                 return Response.status(200).build(); 
             }
             return Response.status(409).build(); 
@@ -103,8 +117,7 @@ public class AuctionsActiveResource implements Runnable {
     @Path("/teste/{id}")
     public Response teste(@PathParam("id") String id){
         AuctionsActive a = auctActiveRepository.findById(id);
-        LocalDateTime d= a.endAuction();
-        return Response.ok(d).build();
+        return Response.status(200).build();
     }
 
 
@@ -114,16 +127,23 @@ public class AuctionsActiveResource implements Runnable {
             JMSConsumer consumer = context.createConsumer(context.createQueue("activateAuction"));
             while (true) {
                 Message message = consumer.receive();
+                System.out.println("I got a message! " + message.toString());
                 if (message == null) {
+                    System.out.println("é nulo!");
                     return;
                 }
-                ScheduleAuctionEvent auction = message.getBody(ScheduleAuctionEvent.class);
+                ObjectMessage om = (ObjectMessage) message;
+                System.out.println("OM: " + om.toString());
+                StartingInfo auction = message.getBody(StartingInfo.class);
+                System.out.println("auction: " + auction.toString());
                 if(auctActiveRepository.findById(auction.getAuctionId())==null){
-                    auctActiveRepository.newAuction(auction.getAuctionId(),auction.getDuration(),auction.getStartingPrice(),auction.getReservePrice());
+                    auctActiveRepository.newAuction(auction.getAuctionId(),auction.getDuration(),auction.getStartingPrice(),auction.getReservePrice(),auction.getSellerId());
+                    prepareToClose.produce(auction.getAuctionId());
                 }
             }
-        } catch (JMSException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            System.out.println("errou");
+            e.printStackTrace();
         }
     }
 
