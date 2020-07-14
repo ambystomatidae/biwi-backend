@@ -14,8 +14,6 @@ public class BiwiUser extends PanacheEntityBase {
 
     @Id
     public String id;
-    @Transient
-    public Credentials credentials;
     public int ratingsCounter;
     public double currentRating;
     @OneToMany(cascade = CascadeType.ALL)
@@ -23,18 +21,21 @@ public class BiwiUser extends PanacheEntityBase {
     @OneToMany(cascade = CascadeType.ALL)
     public Set<Score> scores;
     // Dados guardados no Keycloak
-    public String username;
-
     public String email;
     @Transient
+    public String password;
+    @Transient
     public boolean emailVerified;
+    @Transient
+    public String firstName;
+    @Transient
+    public String lastName;
 
     public BiwiUser() {
     }
 
-    public BiwiUser(String id, String username, String email) {
+    public BiwiUser(String id, String email) {
         this.id = id;
-        this.username = username;
         this.email = email;
         this.watchlist = new ArrayList<>();
         this.currentRating = 0;
@@ -43,6 +44,10 @@ public class BiwiUser extends PanacheEntityBase {
 
     public void addToWatchlist(Auction auction) {
         this.watchlist.add(auction);
+    }
+
+    public void removeFromWatchlist(Auction auction) {
+        this.watchlist.remove(auction);
     }
 
     public void addToScore(Score score) {
@@ -54,19 +59,27 @@ public class BiwiUser extends PanacheEntityBase {
     public void addKeycloakInfo(JSONObject keycloakUser) {
         this.email = (String) keycloakUser.get("email");
         this.emailVerified = (Boolean) keycloakUser.get("emailVerified");
+        this.firstName = (String) keycloakUser.get("firstName");
+        this.lastName = (String) keycloakUser.get("lastName");
     }
 
     public boolean isValid() {
-        return credentials != null && credentials.isValid() && credentials.username != null;
+        return this.email != null && this.password != null && this.firstName != null && this.lastName != null;
     }
+
 
     @Override
     public String toString() {
         return "BiwiUser{" +
-                "credentials=" + credentials +
+                "id='" + id + '\'' +
                 ", ratingsCounter=" + ratingsCounter +
                 ", currentRating=" + currentRating +
                 ", watchlist=" + watchlist +
+                ", scores=" + scores +
+                ", email='" + email + '\'' +
+                ", emailVerified=" + emailVerified +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 '}';
     }
 }
