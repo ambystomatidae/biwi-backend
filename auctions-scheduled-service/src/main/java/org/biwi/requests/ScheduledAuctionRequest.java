@@ -1,27 +1,29 @@
-package org.biwi.rest.external;
-import org.biwi.rest.models.AuctionDescription;
+package org.biwi.requests;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
-public class ScheduledAuction {
+public class ScheduledAuctionRequest {
     private String auctionId;
     private LocalDateTime beginDate;
     private double startingPrice;
     private List<String> categories;
+    private double reservePrice;
+    private LocalTime duration;
+    private String sellerId;
 
-    public ScheduledAuction(String auctionId, LocalDateTime beginDate, double startingPrice, List<String> categories) {
+    public ScheduledAuctionRequest() {
+    }
+
+    public ScheduledAuctionRequest(String auctionId, LocalDateTime beginDate, double startingPrice, List<String> categories, double reservePrice, LocalTime duration, String sellerId) {
         this.auctionId = auctionId;
         this.beginDate = beginDate;
         this.startingPrice = startingPrice;
         this.categories = categories;
-    }
-
-    public ScheduledAuction(AuctionDescription ad) {
-        this.auctionId = ad.getAuctionId();
-        this.beginDate = ad.getBeginDate();
-        this.startingPrice = ad.getStartingPrice();
-        this.categories = ad.getCategories();
+        this.reservePrice = reservePrice;
+        this.duration = duration;
+        this.sellerId = sellerId;
     }
 
     public String getAuctionId() {
@@ -54,5 +56,29 @@ public class ScheduledAuction {
 
     public void setCategories(List<String> categories) {
         this.categories = categories;
+    }
+
+    public double getReservePrice() {
+        return reservePrice;
+    }
+
+    public void setReservePrice(double reservePrice) {
+        this.reservePrice = reservePrice;
+    }
+
+    public LocalTime getDuration() {
+        return duration;
+    }
+
+    public void setDuration(LocalTime duration) {
+        this.duration = duration;
+    }
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
     }
 }

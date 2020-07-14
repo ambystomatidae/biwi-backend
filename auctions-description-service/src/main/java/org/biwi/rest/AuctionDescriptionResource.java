@@ -1,7 +1,7 @@
 package org.biwi.rest;
 
 import org.biwi.rest.external.AuctionsScheduledService;
-import org.biwi.rest.external.ScheduledAuction;
+import org.biwi.rest.external.ScheduledAuctionRequest;
 import org.biwi.rest.models.AuctionDescription;
 import org.biwi.rest.requests.AuctionDescriptionPostRequest;
 import org.biwi.rest.requests.GetAllDescriptions;
@@ -69,7 +69,7 @@ public class AuctionDescriptionResource {
         }
         ad.setImages(imgs);
         boolean success = repository.add(ad);
-        Response r = scheduledService.schedule(new ScheduledAuction(ad));
+        Response r = scheduledService.schedule(new ScheduledAuctionRequest(ad));
         System.out.println("Status: " + r.getStatus());
         if (success)
             return Response.ok(ad).build();

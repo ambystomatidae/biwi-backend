@@ -67,6 +67,24 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client</artifactId>
+    </dependency>
+    <!-- Mutiny and RestEasy support extensions if not already included -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-mutiny</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-mutiny</artifactId>
+    </dependency>
+    <!-- Context Propagation extension -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-context-propagation</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

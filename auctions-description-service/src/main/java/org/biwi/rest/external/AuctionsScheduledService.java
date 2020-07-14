@@ -14,5 +14,5 @@ public interface AuctionsScheduledService {
     @POST
     @Path("schedule")
     @Produces("application/json")
-    Response schedule(ScheduledAuction auction);
+    Response schedule(ScheduledAuctionRequest auction);
 }
