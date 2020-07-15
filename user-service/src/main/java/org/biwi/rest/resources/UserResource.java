@@ -4,6 +4,8 @@ import io.quarkus.security.identity.SecurityIdentity;
 import org.apache.http.auth.AuthenticationException;
 import org.biwi.rest.models.*;
 import org.biwi.rest.repositories.UserRepository;
+import org.biwi.rest.services.BucketManager;
+import org.biwi.rest.services.ImageEncoderUtil;
 import org.biwi.rest.util.RequestsHandler;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -19,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
+import java.util.UUID;
 
 @Path("/v1")
 @Produces(MediaType.APPLICATION_JSON)
@@ -33,6 +36,9 @@ public class UserResource {
 
     @Inject
     SecurityIdentity identity;
+
+    @Inject
+    BucketManager bucketManager;
 
     String version = ConfigProvider.getConfig().getValue("biwi.version", String.class);
 
@@ -68,7 +74,9 @@ public class UserResource {
             String[] parsed = location.split("/");
             String id = parsed[parsed.length - 1];
             requestsHandler.updateUsername(id);
-            userRepository.persist(new BiwiUser(id, user.email));
+            UUID fileId = UUID.randomUUID();
+            String imageURI = bucketManager.storeImage(ImageEncoderUtil.decode(user.encodedImage), fileId.toString() + ".jpeg");
+            userRepository.persist(new BiwiUser(id, user.email, imageURI));
             return Response.created(URI.create(version + "/" + id)).build();
         } catch (Exception e) {
             return Response.status(409).entity(e.getMessage()).build();
@@ -113,8 +121,8 @@ public class UserResource {
     @RolesAllowed("user")
     @Path("user/watchlist")
     public Response addToUserWatchList(Auction auction) throws ParseException, IOException, AuthenticationException {
-        /*if (!auction.isValid() || !requestsHandler.isActiveAuction(auction))
-            return Response.status(400).build();*/
+        if (!auction.isValid() || !requestsHandler.isActiveAuction(auction))
+            return Response.status(400).build();
 
         BiwiUser persistedUser = userRepository.findById(accessToken.getName());
 

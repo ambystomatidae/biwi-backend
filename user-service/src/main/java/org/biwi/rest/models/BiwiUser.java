@@ -14,6 +14,7 @@ public class BiwiUser extends PanacheEntityBase {
 
     @Id
     public String id;
+    public String profileImageURI;
     public int ratingsCounter;
     public double currentRating;
     @OneToMany(cascade = CascadeType.ALL)
@@ -30,13 +31,17 @@ public class BiwiUser extends PanacheEntityBase {
     public String firstName;
     @Transient
     public String lastName;
+    // Imagem de perfil
+    @Transient
+    public String encodedImage;
 
     public BiwiUser() {
     }
 
-    public BiwiUser(String id, String email) {
+    public BiwiUser(String id, String email, String imageURI) {
         this.id = id;
         this.email = email;
+        this.profileImageURI = imageURI;
         this.watchlist = new ArrayList<>();
         this.currentRating = 0;
         this.scores = new HashSet<>();

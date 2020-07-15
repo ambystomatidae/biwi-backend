@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "biwi1920",
+  "private_key_id": "2e1ab49121ea65e5365713428259fb2c90c9c514",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC/aDP1sGpLRWHx\nMDgRUNQnAMx7kZh2pUwkyYPp2QmYPIK0IsaFsBsx9zfhkXj9U1jKU1Wqmv/rBPiy\nh2oQ5GTL/ZKAkocPzv+fBjolPeV22uUko9oUdQPH4zgqkZyvSFzZEh7vLzZ/ydMT\nEZWJLQzh+bOLe7EjUDxXXoXNuyoui90kLTwcy6Q97W9YflEQssoK2E8V3Fe/DgNy\nxLI20+4MgT2aMGlU6F+uqLIiAO2eHHPjFYOz9JdVaZC79Rn5c7NcvSePf06N5XmB\ndZMSPotYUv9n62iUkGUXMXbnCDsp4OcQipFgRbG/Ppu8ZkrIpIuSRsyV5KtcI9/S\n8ByqrtMFAgMBAAECggEAJnDdDpjRoDBdDT1r5T5gfTzR1HdXMWzdL/4wugRWwvZU\nIa1iRXMq4wwNcwXuUKIukOPPrqXWg/LJp8E+cgoMnFNe2ueSrIAcImnzv4sAzLAF\nmSg3IiimC7z8iMAZwbI8w3O6Nrs6rMtx0sCTUat0jOXDQ14iIz93/uwC32CZhiND\nV6cYs6I4YmLp3NXuJx9ZSffcoZzUe5gl6fj9GaUK+X3sQJHxNFS0v6VmMFPofgwE\najJ7LMZGUxBrwrwlYzzY9Im5sTET3l6X3OqgGJbpq/CYkCA99Ggm9mG6ScVeASnG\nUvubTzuUsYffRWBZYox1k66iXE41QdG0Std2jIupeQKBgQD3+MHYb9h76cRQKyvy\ng4ZTPIS0njG8Y3qBTd888P383F9H9Bcz0geuqQ3fiCpDwNTGtneD8/HLcQLNTXzB\n5Id2S1gF29AhJa+iGcRED1YBwp/2KWVzdd7lgiCHwE/S2b80RsSswcgtCrCu7pxJ\nTiP25w6q0kjQvNe+DjN4HwH8qwKBgQDFmqAraYS4cOHkK7sbgatFBwUrayayESYD\ny4aZb/YjoXgqqOU+QiZq/stfdnARkoEpVqaHwik/Pj7gABztUEeIY9l6BpCez5jg\nPq7CrQlnGle6dT1eaMGxZxK15oDc4rXqtiFDXONIJ82+fR4/gZ+8sawrWqVapCQk\nA5qUDUkPDwKBgEjCpy548w648y+K22RXj2yRD2doG7PphKK4VM6u7/foOdUFHGHK\nORLY7AcxDyW+STDdjYgcZlCJoobXO8ow4kalqPhfHVz8j+KCqQJHdbcigolacDhG\n19aELkNm/IUj+2S9dywx2CjPQDS0MwuXcBochkM9XLxTDQLpa9TNVGntAoGANeem\nhfE1CXORy8K6Ohi3dg8iM+P5HF5dNm/Q+g524OVteIW2c7Nr84gqRpJyo/iJT5OZ\nvjMTOXNrh4PAYGSj/uruKsGbthb/pzyyQ90cUYn4IJ9W7Gg7Xn+1tPV6dcdKxQqG\nLHAseESTdcF//OcJglodk34Y2Y8pZMGu63BsW7UCgYEA8VtDGa1fnrqHabBXs+jH\nOeWgxVBbtkeGn68l8r0CCwlmhdrg+bk18LcPiOlM9g7AfcbCF2X5tOigcQUdlsRn\np2vxQmm9dFnchvZki0WGCJAyiKdTUi9IB3H7RUVRP6nK97WZEa4x5OeBXQWyTbwp\nMQh4qaQ6nGSwq4WXmHbxY6o=\n-----END PRIVATE KEY-----\n",
+  "client_email": "biwi-desc@biwi1920.iam.gserviceaccount.com",
+  "client_id": "101307617693967425170",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/biwi-desc%40biwi1920.iam.gserviceaccount.com"
+}

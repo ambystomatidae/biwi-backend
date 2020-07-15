@@ -12,10 +12,6 @@ public class Auction extends PanacheEntity {
     public Auction() {
     }
 
-    public Auction(String auctionId) {
-        this.auctionId = auctionId;
-    }
-
     public boolean isValid() {
         return auctionId != null;
     }
