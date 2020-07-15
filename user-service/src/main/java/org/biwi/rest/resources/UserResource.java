@@ -136,23 +136,23 @@ public class UserResource {
     @DELETE
     @Transactional
     @RolesAllowed("user")
-    @Path("user/watchlist")
-    public Response removeFromWatchlist(Auction auction){
+    @Path("user/watchlist/{auctionId}")
+    public Response removeFromWatchlist(@PathParam("auctionId") String auctionId){
         BiwiUser persistedUser = userRepository.findById(accessToken.getName());
 
-        if (!persistedUser.watchlist.contains(auction))
+        if (!persistedUser.watchlist.contains(auctionId))
             return Response.status(409).entity("{\"errorMessage\": \"Auction not in watchlist\"}").build();
 
-        persistedUser.removeFromWatchlist(auction);
+        persistedUser.removeFromWatchlist(new Auction(auctionId));
         return Response.ok(persistedUser.watchlist).build();
     }
 
     @DELETE
     @Transactional
     @RolesAllowed("admin")
-    @Path("/watchlist")
-    public Response removeFromAllWatchlists(Auction auction) {
-        userRepository.removeFromWatchlist(auction);
+    @Path("/watchlist/{auctionId}")
+    public Response removeFromAllWatchlists(@PathParam("auctionId") String auctionId) {
+        userRepository.removeFromWatchlist(new Auction(auctionId));
         return Response.ok().build();
     }
 
