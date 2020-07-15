@@ -19,15 +19,16 @@ public class ClosedAuctionsResource {
     @Inject
     ClosedAuctionsRepository closedAuctionsRepository;
 
+    // Método de teste. Eliminar depois
     @POST
     @Transactional
-    @RolesAllowed("admin")
     @Path("/auction")
     public Response postClosedAuction(ClosedAuction auction) {
         closedAuctionsRepository.persist(auction);
         return Response.ok().build();
     }
 
+    // Método de teste. Eliminar depois
     @GET
     @RolesAllowed("admin")
     @Path("/auction")

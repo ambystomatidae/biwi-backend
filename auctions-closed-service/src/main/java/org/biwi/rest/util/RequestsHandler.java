@@ -61,20 +61,6 @@ public class RequestsHandler {
 
     Token adminToken;
 
-
-    private String getAdminToken() throws IOException, AuthenticationException, ParseException {
-        if (adminToken == null) {
-            System.out.println("Getting new admin token");
-            adminToken = new Token(getToken(adminUsername, adminPassword));
-        }
-
-        if (!adminToken.isValid()) {
-            System.out.println("Refreshing admin token");
-            adminToken = new Token(refreshToken(adminToken.refresh_token));
-        }
-        return adminToken.access_token;
-    }
-
     public JSONObject getAuctionData(String auctionId) throws IOException, ParseException, AuthenticationException {
         String token = getAdminToken();
         HttpClient client = HttpClients.createDefault();
@@ -90,15 +76,27 @@ public class RequestsHandler {
     }
 
     public void removeAuction(String auctionId) throws IOException, AuthenticationException, ParseException {
-        String token = getAdminToken();
         HttpClient client = HttpClients.createDefault();
         HttpDelete deleteFromActive = new HttpDelete(activeAuctionsServiceUrl + "/" + removePath + "/" + auctionId);
         HttpDelete deleteFromWatchlist = new HttpDelete(userServiceUrl + "/" + watchlistPath + "/" + auctionId);
-        deleteFromActive.addHeader("Authorization", "Bearer " + token);
-        deleteFromWatchlist.addHeader("Authorization", "Bearer " + token);
 
         HttpResponse httpResponse = client.execute(deleteFromActive);
         HttpResponse httpResponse2 = client.execute(deleteFromWatchlist);
+    }
+
+    // Token related
+
+    private String getAdminToken() throws IOException, AuthenticationException, ParseException {
+        if (adminToken == null) {
+            System.out.println("Getting new admin token");
+            adminToken = new Token(getToken(adminUsername, adminPassword));
+        }
+
+        if (!adminToken.isValid()) {
+            System.out.println("Refreshing admin token");
+            adminToken = new Token(refreshToken(adminToken.refresh_token));
+        }
+        return adminToken.access_token;
     }
 
     public JSONObject getToken(String username, String password) throws IOException, AuthenticationException, ParseException {

@@ -7,7 +7,10 @@ import org.biwi.rest.messaging.*;
 import org.biwi.rest.*;
 import org.biwi.rest.model.AuctionsActive;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
+
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -34,13 +37,16 @@ public class AuctionsActiveResource {
     @RestClient
     ShortDescriptionService shortDescriptionService;
 
+    @Inject
+    JsonWebToken jwt;
 
     @GET
     @Path("/{id}")
-    public Response getByID(@PathParam("id") String id){
+    @RolesAllowed("user")
+    public Response getByID(@PathParam("id") String id) {
         AuctionsActive a = auctActiveRepository.findById(id);
-        if (a != null){
-            if(a.isOpen()){
+        if (a != null) {
+            if (a.isOpen()) {
                 return Response.ok(a).build();
             }
             return Response.status(403).build();
@@ -48,17 +54,16 @@ public class AuctionsActiveResource {
         return Response.status(400).build();
     }
 
-    
     @GET
     @Path("/all")
-    public Response getAll(){
+    public Response getAll() {
         List<AuctionsActive> all = auctActiveRepository.listAll();
-        if(all!=null){
+        if (all != null) {
             List<ShortDescription> result = new ArrayList<>();
-            for(AuctionsActive a: all){
-                if(a.isOpen()){
+            for (AuctionsActive a : all) {
+                if (a.isOpen()) {
                     ShortDescription sd = shortDescriptionService.getShortDescription(a.getId());
-                    if(sd!=null) {
+                    if (sd != null) {
                         sd.setActualPrice(a.getLastBidValue());
                         result.add(sd);
                     }
@@ -68,45 +73,50 @@ public class AuctionsActiveResource {
         }
         return Response.status(400).build();
     }
-    
 
-   @POST
-   @Transactional
-   public boolean addAuction(AuctionsActive auctionsActive){
-       AuctionsActive auction = new AuctionsActive(auctionsActive.getId(),LocalTime.parse("00:30:00"),auctionsActive.getStartingPrice(),auctionsActive.getReservePrice(), auctionsActive.getSellerId());
-       auctActiveRepository.persist(auction);
-       if(auctActiveRepository.isPersistent(auction)){
-           return true;
-       }
-       return false;
-   }
+    // Método para testar, eliminar depois
+    @POST
+    @Transactional
+    public boolean addAuction(AuctionsActive auctionsActive) {
+        AuctionsActive auction = new AuctionsActive(auctionsActive.getId(), LocalTime.parse("00:30:00"), auctionsActive.getStartingPrice(), auctionsActive.getReservePrice(), auctionsActive.getSellerId());
+        auctActiveRepository.persist(auction);
+        if (auctActiveRepository.isPersistent(auction)) {
+            return true;
+        }
+        return false;
+    }
 
-   @POST
-   @Path("/bid/{id}")
-   @Transactional
-   public Response addBid(@PathParam("id") String id,Bid b){
-        AuctionsActive aa = auctActiveRepository.validateBid(id,b.getValue());
-        if(aa!=null && aa.isOpen()){
-            Bid bid = new Bid(b.getIdUser(),b.getValue());
+    @POST
+    @Path("/bid/{id}")
+    @Transactional
+    @RolesAllowed("user")
+    public Response addBid(@PathParam("id") String id, Bid b) {
+        AuctionsActive aa = auctActiveRepository.validateBid(id, b.getValue());
+
+        if (aa == null)
+            return Response.status(404).build();
+
+        if (aa.isOpen() || jwt.getName().equals(b.getIdUser())) {
+            Bid bid = new Bid(b.getIdUser(), b.getValue());
             bid.persist();
-            boolean status= auctActiveRepository.addBid(aa,id,bid);
-            if (status){
-                auctionBid.produce(bid,id);
-                return Response.status(200).build(); 
+            boolean status = auctActiveRepository.addBid(aa, id, bid);
+            if (status) {
+                auctionBid.produce(bid, id);
+                return Response.status(200).build();
             }
-            return Response.status(409).build(); 
+            return Response.status(409).build();
         }
         return Response.status(403).build();
-   }
+    }
 
     @DELETE
     @Path("/remove/{id}")
-    public Response removeAuction(@PathParam("id") String id){
+    public Response removeAuction(@PathParam("id") String id) {
         AuctionsActive aa = auctActiveRepository.removeAuction(id);
-        if(aa!=null){
+        if (aa != null) {
             return Response.ok(aa).build();
         }
-        return Response.status(400).build();
+        return Response.status(404).build();
     }
 
 }
