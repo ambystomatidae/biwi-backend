@@ -149,7 +149,6 @@ public class UserResource {
 
     @DELETE
     @Transactional
-    @RolesAllowed("admin")
     @Path("/watchlist/{auctionId}")
     public Response removeFromAllWatchlists(@PathParam("auctionId") String auctionId) {
         userRepository.removeFromWatchlist(new Auction(auctionId));
