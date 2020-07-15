@@ -1,0 +1,386 @@
+{
+  "version": 2,
+  "extra_config": {
+    "github_com/devopsfaith/krakend-cors": {
+      "allow_origins": [
+        "*"
+      ],
+      "expose_headers": [
+        "Content-Length"
+      ],
+      "max_age": "12h",
+      "allow_methods": [
+        "GET",
+        "HEAD",
+        "POST",
+        "PUT",
+        "DELETE"
+      ]
+    }
+  },
+  "port": 8080,
+  "timeout": "20000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "biwi-gateway",
+  "disable_rest": false,
+  "endpoints": [
+    {
+      "endpoint": "/home",
+      "method": "GET",
+      "extra_config": {},
+      "output_encoding": "json",
+      "concurrent_calls": 1,
+      "backend": [
+        {
+          "url_pattern": "/v1/soon",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {},
+          "method": "GET",
+          "host": [
+            "http://auctions-scheduled:8080"
+          ],
+          "disable_host_sanitize": false
+        },
+        {
+          "url_pattern": "/v1/hotpicks",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {},
+          "method": "GET",
+          "host": [
+            "http://auctions-active:8080"
+          ],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/categories",
+      "method": "GET",
+      "extra_config": {},
+      "output_encoding": "json",
+      "concurrent_calls": 1,
+      "is_collection": true,
+      "backend": [
+        {
+          "url_pattern": "/v1/categories",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {
+            "github.com/devopsfaith/krakend-httpcache": {}
+          },
+          "method": "GET",
+          "host": [
+            "http://categories:8080"
+          ],
+          "disable_host_sanitize": false,
+          "is_collection": true,
+          "target": "",
+          "mapping": {
+            "collection": "categories"
+          }
+        }
+      ],
+      "headers_to_pass": []
+    },
+    {
+      "endpoint": "/signup",
+      "method": "POST",
+      "extra_config": {},
+      "output_encoding": "json",
+      "concurrent_calls": 1,
+      "backend": [
+        {
+          "url_pattern": "/v1/register",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {},
+          "method": "POST",
+          "host": [
+            "http://user:8080"
+          ],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/login",
+      "method": "POST",
+      "extra_config": {},
+      "output_encoding": "json",
+      "concurrent_calls": 1,
+      "backend": [
+        {
+          "url_pattern": "/v1/login",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {},
+          "method": "POST",
+          "host": [
+            "http://user:8080"
+          ],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/profile",
+      "method": "GET",
+      "extra_config": {},
+      "output_encoding": "json",
+      "concurrent_calls": 1,
+      "backend": [
+        {
+          "url_pattern": "/v1/user",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {},
+          "method": "GET",
+          "host": [
+            "http://user:8080"
+          ],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/review/{id}",
+      "method": "POST",
+      "extra_config": {},
+      "output_encoding": "json",
+      "concurrent_calls": 1,
+      "backend": [
+        {
+          "url_pattern": "/v1/user/review/{id}",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {},
+          "method": "POST",
+          "host": [
+            "http://user:8080"
+          ],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/watchlist",
+      "method": "GET",
+      "extra_config": {},
+      "output_encoding": "json",
+      "concurrent_calls": 1,
+      "backend": [
+        {
+          "url_pattern": "/v1/user/watchlist",
+          "encoding": "json",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "host": [
+            "http://user:8080"
+          ],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/watchlist",
+      "method": "POST",
+      "extra_config": {},
+      "output_encoding": "json",
+      "concurrent_calls": 1,
+      "backend": [
+        {
+          "url_pattern": "/v1/user/watchlist",
+          "encoding": "json",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "host": [
+            "http://user:8080"
+          ],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/watchlist/{id}",
+      "method": "DELETE",
+      "output_encoding": "json",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/v1/user/watchlist/{id}",
+          "encoding": "json",
+          "sd": "static",
+          "method": "DELETE",
+          "extra_config": {},
+          "host": [
+            "http://user:8080"
+          ],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/auctions/active",
+      "method": "GET",
+      "extra_config": {},
+      "output_encoding": "json",
+      "concurrent_calls": 1,
+      "querystring_params": [
+        "page",
+        "categories",
+        "pageSize",
+        "lowerPrice",
+        "higherPrice",
+        "sortBy"
+      ],
+      "backend": [
+        {
+          "url_pattern": "/active/all",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {},
+          "method": "GET",
+          "host": [
+            "http://auctions-active:8080"
+          ],
+          "disable_host_sanitize": false,
+          "is_collection": true,
+          "target": "",
+          "mapping": {
+            "collection": "auctions"
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/auctions/scheduled",
+      "method": "GET",
+      "extra_config": {},
+      "output_encoding": "json",
+      "concurrent_calls": 1,
+      "querystring_params": [],
+      "backend": [
+        {
+          "url_pattern": "/v1/all",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {},
+          "method": "GET",
+          "host": [
+            "http://auctions-scheduled:8080"
+          ],
+          "disable_host_sanitize": false,
+          "is_collection": true,
+          "target": "",
+          "mapping": {
+            "collection": "auctions"
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/auctions",
+      "method": "POST",
+      "extra_config": {},
+      "output_encoding": "json",
+      "concurrent_calls": 1,
+      "backend": [
+        {
+          "url_pattern": "/v1/",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {},
+          "method": "POST",
+          "disable_host_sanitize": false,
+          "host": [
+            "http://auctions-description:8080"
+          ]
+        }
+      ]
+    },
+    {
+      "endpoint": "/auction/{id}",
+      "method": "GET",
+      "extra_config": {
+        "github.com/devopsfaith/krakend/proxy": {
+          "sequential": true
+        }
+      },
+      "output_encoding": "json",
+      "concurrent_calls": 1,
+      "backend": [
+        {
+          "url_pattern": "/active/{id}",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {},
+          "method": "GET",
+          "host": [
+            "http://auctions-active:8080"
+          ],
+          "disable_host_sanitize": false
+        },
+        {
+          "url_pattern": "/v1/user/{resp0_sellerId}",
+          "encoding": "json",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "host": [
+            "http://user:8080"
+          ],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/auction/{id}",
+      "method": "POST",
+      "extra_config": {},
+      "output_encoding": "json",
+      "concurrent_calls": 1,
+      "backend": [
+        {
+          "url_pattern": "/active/bid/{id}",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {},
+          "method": "POST",
+          "host": [
+            "http://auctions-active:8080"
+          ],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/auctions/hotpicks",
+      "method": "GET",
+      "output_encoding": "json",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/hotpicks",
+          "encoding": "json",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "host": [
+            "http://auctions-active:8080"
+          ],
+          "disable_host_sanitize": false,
+          "is_collection": true,
+          "target": "",
+          "mapping": {
+            "collection": "auctions"
+          }
+        }
+      ]
+    }
+  ]
+}

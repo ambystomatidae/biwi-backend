@@ -87,13 +87,16 @@ public class ScheduledResource {
     @GET
     @Path("all")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll(AllStartingRequestObject all) {
-        int pageSize = all.getPageSize();
-        int page = all.getPage();
-        Filter filter = all.getFilter();
-        String sortBy = all.getSortBy();
-        if (sortBy == null)
-            sortBy = "beginDate"; // by default sorted by date
+    public Response getAll(@QueryParam("categories") List<String> categories,
+                           @DefaultValue("0") @QueryParam("page") int page,
+                           @DefaultValue("20") @QueryParam("pageSize") int pageSize,
+                           @DefaultValue("beginDate") @QueryParam("sortBy") String sortBy,
+                           @DefaultValue("0") @QueryParam("lowerPrice") double lowerPrice,
+                           @DefaultValue("200000000") @QueryParam("higherPrice") double higherPrice) {
+        Filter filter = new Filter();
+        filter.setCategories(categories);
+        filter.setHigherPrice(higherPrice);
+        filter.setLowerPrice(lowerPrice);
         List<ScheduledAuction> allScheduled = repository.getAll(pageSize, page, filter, sortBy);
         List<ShortDescription> result = new ArrayList<>();
         for(ScheduledAuction s : allScheduled) {
