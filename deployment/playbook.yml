@@ -61,6 +61,15 @@
       copy:
         src: "roles/services/templates/biwi_realm.json"
         dest: "/opt/keycloak/biwi_realm.json"
+    - name: Create broker directory
+      file:
+        path: /opt/artemis
+        state: directory
+        mode: u=r
+    - name: Copy broker conf file to all hosts
+      copy:
+        src: "roles/services/templates/broker.xml"
+        dest: "/opt/artemis/broker.xml"
 
 - hosts:
   - machine-1

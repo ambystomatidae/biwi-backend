@@ -12,10 +12,17 @@
         target_port: 5672
       - published_port: 8161
         target_port: 8161
+      - published_port: 61613
+        target_port: 61613
+      - published_port: 61614
+        target_port: 61614
     mounts:
       - type: volume
         source: 'broker-vol'
         target: '/var/lib/artemis/data'
+      - type: bind
+        source: /opt/artemis/broker.xml
+        target: /var/lib/artemis/etc-override/broker-00.xml
     networks: 
       - biwi-net
 
