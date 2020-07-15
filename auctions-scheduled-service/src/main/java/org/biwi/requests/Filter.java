@@ -32,7 +32,8 @@ public class Filter {
     }
 
     public void setCategories(List<String> categories) {
-        this.categories = categories;
+        if (categories != null && categories.size() > 0)
+            this.categories = categories;
     }
 
     public Double getLowerPrice() {

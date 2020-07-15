@@ -70,6 +70,16 @@
       copy:
         src: "roles/services/templates/broker.xml"
         dest: "/opt/artemis/broker.xml"
+    - name: Create krakend directory
+      file:
+        path: /opt/krakend
+        state: directory
+        mode: u=r
+    - name: Copy krakend conf file to all hosts
+      copy:
+        src: "roles/services/templates/krakend.json"
+        dest: "/opt/krakend/krakend.json"
+        force: yes
 
 - hosts:
   - machine-1

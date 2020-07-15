@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 public class ShortDescription {
+    private String auctionId;
     private String name;
     private double startingPrice;
     private LocalDateTime beginDate;
@@ -16,7 +17,8 @@ public class ShortDescription {
     public ShortDescription() {
     }
 
-    public ShortDescription(String name, double startingPrice, LocalDateTime beginDate, String mainImage, LocalTime duration, List<String> categories, String sellerId) {
+    public ShortDescription(String auctionId, String name, double startingPrice, LocalDateTime beginDate, String mainImage, LocalTime duration, List<String> categories, String sellerId) {
+        this.auctionId = auctionId;
         this.name = name;
         this.startingPrice = startingPrice;
         this.beginDate = beginDate;
@@ -80,5 +82,13 @@ public class ShortDescription {
 
     public void setSellerId(String sellerId) {
         this.sellerId = sellerId;
+    }
+
+    public String getAuctionId() {
+        return auctionId;
+    }
+
+    public void setAuctionId(String auctionId) {
+        this.auctionId = auctionId;
     }
 }
