@@ -39,8 +39,12 @@ public class AuctionsActiveResource {
     @Path("/{id}")
     public Response getByID(@PathParam("id") String id){
         AuctionsActive a = auctActiveRepository.findById(id);
-        if (a != null)
-            return Response.ok(a).build();
+        if (a != null){
+            if(a.isOpen()){
+                return Response.ok(a).build();
+            }
+            return Response.status(403).build();
+        }
         return Response.status(400).build();
     }
 
@@ -52,9 +56,13 @@ public class AuctionsActiveResource {
         if(all!=null){
             List<ShortDescription> result = new ArrayList<>();
             for(AuctionsActive a: all){
-                ShortDescription sd = shortDescriptionService.getShortDescription(a.getId());
-                sd.setActualPrice(a.getLastBidValue());
-                result.add(sd);
+                if(a.isOpen()){
+                    ShortDescription sd = shortDescriptionService.getShortDescription(a.getId());
+                    if(sd!=null) {
+                        sd.setActualPrice(a.getLastBidValue());
+                        result.add(sd);
+                    }
+                }
             }
             return Response.ok(result).build();
         }
@@ -88,10 +96,10 @@ public class AuctionsActiveResource {
             }
             return Response.status(409).build(); 
         }
-        return Response.status(400).build();
+        return Response.status(403).build();
    }
 
-    @GET
+    @DELETE
     @Path("/remove/{id}")
     public Response removeAuction(@PathParam("id") String id){
         AuctionsActive aa = auctActiveRepository.removeAuction(id);
