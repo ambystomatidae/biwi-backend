@@ -88,7 +88,7 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
 
     public List<AuctionsActive> getHotpicks (){
         LocalDateTime limit = LocalDateTime.now().plusHours(1).minusMinutes(10);
-        PanacheQuery<AuctionsActive> query = find("select a.id from AuctionsActive a inner join a.bids as b where b.timeStamp > ?1 group by a.id order by sum(b.value) desc ", limit);
+        PanacheQuery<AuctionsActive> query = find("from AuctionsActive a inner join a.bids as b where b.timeStamp > ?1 group by a.id order by sum(b.value) desc ", limit);
         return query.list();
     }
 

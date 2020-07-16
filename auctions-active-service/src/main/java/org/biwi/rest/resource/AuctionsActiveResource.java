@@ -69,7 +69,7 @@ public class AuctionsActiveResource {
     @Path("/hotpicks")
     public Response getHotpicks(){
         List<AuctionsActive> aa= auctActiveRepository.getHotpicks();
-        if (aa!=null){
+       if (aa != null) {
             List<ShortDescription> result= this.getShortDescription(aa);
             return Response.ok(result).build();
         }
@@ -99,7 +99,8 @@ public class AuctionsActiveResource {
         if (aa == null)
             return Response.status(404).build();
 
-        if (aa.isOpen() || jwt.getName().equals(b.getIdUser())) {
+        if (aa.isOpen() //|| jwt.getName().equals(b.getIdUser())) {
+        ){
             Bid bid = new Bid(b.getIdUser(), b.getValue());
             bid.persist();
             boolean status = auctActiveRepository.addBid(aa, id, bid);
