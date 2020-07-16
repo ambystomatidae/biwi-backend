@@ -59,16 +59,7 @@ public class AuctionsActiveResource {
     public Response getAll() {
         List<AuctionsActive> all = auctActiveRepository.listAll();
         if (all != null) {
-            List<ShortDescription> result = new ArrayList<>();
-            for (AuctionsActive a : all) {
-                if (a.isOpen()) {
-                    ShortDescription sd = shortDescriptionService.getShortDescription(a.getId());
-                    if (sd != null) {
-                        sd.setActualPrice(a.getLastBidValue());
-                        result.add(sd);
-                    }
-                }
-            }
+            List<ShortDescription> result= this.getShortDescription(all);
             return Response.ok(result).build();
         }
         return Response.status(400).build();
@@ -78,7 +69,11 @@ public class AuctionsActiveResource {
     @Path("/hotpicks")
     public Response getHotpicks(){
         List<AuctionsActive> aa= auctActiveRepository.getHotpicks();
-        return Response.ok(aa).build();
+        if (aa!=null){
+            List<ShortDescription> result= this.getShortDescription(aa);
+            return Response.ok(result).build();
+        }
+        return Response.status(400).build();
     }
 
 
@@ -127,4 +122,17 @@ public class AuctionsActiveResource {
         return Response.status(404).build();
     }
 
+    private List<ShortDescription> getShortDescription (List<AuctionsActive> all){
+        List<ShortDescription> result = new ArrayList<>();
+        for (AuctionsActive a : all) {
+            if (a.isOpen()) {
+                ShortDescription sd = shortDescriptionService.getShortDescription(a.getId());
+                if (sd != null) {
+                    sd.setActualPrice(a.getLastBidValue());
+                    result.add(sd);
+                }
+            }
+        }
+        return result;
+    }
 }
