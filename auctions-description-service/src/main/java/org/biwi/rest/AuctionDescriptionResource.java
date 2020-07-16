@@ -11,8 +11,10 @@ import org.biwi.rest.repositories.AuctionDescriptionRepository;
 import org.biwi.rest.services.BucketManager;
 import org.biwi.rest.services.ImageEncoderUtil;
 import org.eclipse.microprofile.context.ManagedExecutor;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -48,13 +50,24 @@ public class AuctionDescriptionResource {
     AuctionsScheduledService scheduledService;
 
     /**
+     * Access Token
+     */
+    @Inject
+    JsonWebToken jwt;
+
+    /**
      * @param auctionId id of the auction to retrieve
      * @return returns the full description of the auction
      */
     @GET
     @Path("/{auctionId}")
-    public AuctionDescription getFull(@PathParam("auctionId") String auctionId) {
-        return repository.getAuctionDescription(auctionId);
+    @RolesAllowed("user")
+    public Response getFull(@PathParam("auctionId") String auctionId) {
+        AuctionDescription auction = repository.getAuctionDescription(auctionId);
+        if (auction != null)
+            return Response.ok(auction).build();
+        else
+            return Response.status(404).build();
     }
 
     /**
@@ -76,7 +89,11 @@ public class AuctionDescriptionResource {
      * @return What is stored as auction description
      */
     @POST
+    @RolesAllowed("user")
     public Response add(AuctionDescriptionPostRequest desc) {
+        if(desc.getSellerId() != jwt.getName())
+            return Response.status(403).build();
+
         AuctionDescription ad = new AuctionDescription(desc);
         UUID fileId = UUID.randomUUID();
         String uri = bucketManager.storeImage(ImageEncoderUtil.decode(desc.getMainImage()), fileId.toString() + ".jpeg");
@@ -96,17 +113,4 @@ public class AuctionDescriptionResource {
         else
             return Response.status(400).build();
     }
-
-    @GET
-    @Path("/{auctionId}/startInfo")
-    public Response getStartingInfo(@PathParam("auctionId") String auctionId) {
-        StartingInfoResponse r = repository.getStartingInfo(auctionId);
-        if (r != null) {
-            return Response.ok(r).build();
-        }
-        else {
-            return Response.status(404).build();
-        }
-    }
-
 }

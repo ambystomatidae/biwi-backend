@@ -131,3 +131,18 @@
     networks:
       - biwi-net
     force_update: true
+
+- name: Setup krakend
+  docker_swarm_service:
+    name: gateway
+    image: devopsfaith/krakend
+    publish:
+      - published_port: 8080
+        target_port: 8080
+    mounts:
+      - type: bind
+        source: /opt/krakend/
+        target: /etc/krakend/
+    networks:
+      - biwi-net
+    force_update: true

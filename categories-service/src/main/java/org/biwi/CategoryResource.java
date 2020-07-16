@@ -3,6 +3,7 @@ package org.biwi;
 import org.biwi.models.Category;
 import org.biwi.repositories.CategoryRepository;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -20,7 +21,6 @@ public class CategoryResource {
 
 
     @GET
-    @Produces("application/json")
     @Path("/{id}")
     public Category get(@PathParam("id") Integer id) {
         return repository.findById(id);
@@ -29,7 +29,6 @@ public class CategoryResource {
 
     @GET
     @Path("/")
-    @Produces("application/json")
     public List<Category> list() {
         return repository.listAll();
     }
@@ -38,8 +37,7 @@ public class CategoryResource {
     @POST
     @Path("/")
     @Transactional
-    @Consumes("application/json")
-    @Produces("application/json")
+    @RolesAllowed("admin")
     public Response add(Category category) {
         if (category.getName() != null) {
             Category c = repository.findByName(category.getName());
@@ -57,8 +55,7 @@ public class CategoryResource {
     @PUT
     @Transactional
     @Path("/{id}")
-    @Consumes("application/json")
-    @Produces("application/json")
+    @RolesAllowed("admin")
     public Response update(@PathParam("id") Integer id, Category category) {
         Category c = repository.findById(id);
 
@@ -77,6 +74,7 @@ public class CategoryResource {
     @DELETE
     @Path("/{id}")
     @Transactional
+    @RolesAllowed("admin")
     public void delete(@PathParam("id") Integer id) {
         repository.deleteById(id);
     }
