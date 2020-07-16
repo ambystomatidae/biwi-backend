@@ -1,4 +1,9 @@
 ---
+- name: Setup label to deploy broker to a fixed machine
+  docker_node:
+    hostname: 'machine-2'
+    labels:
+      broker: 'true'
 - name: Setup message broker
   docker_swarm_service:
     name: broker
@@ -16,6 +21,9 @@
         target_port: 61613
       - published_port: 61614
         target_port: 61614
+    placement:
+      constraints:
+        - node.labels.broker == true
     mounts:
       - type: volume
         source: 'broker-vol'
@@ -26,6 +34,11 @@
     networks: 
       - biwi-net
 
+- name: Setup label to deploy db to a fixed machine
+  docker_node:
+    hostname: 'machine-1'
+    labels:
+      db: 'true'
 - name: Setup database
   docker_swarm_service:
     name: db
@@ -43,6 +56,9 @@
     publish:
       - published_port: 5432
         target_port: 5432
+    placement:
+      constraints:
+        - node.labels.db == true
     networks:
       - biwi-net
     force_update: true
@@ -69,6 +85,11 @@
       - biwi-net
     force_update: true
 
+- name: Setup label to deploy keycloak to a fixed machine
+  docker_node:
+    hostname: 'machine-3'
+    labels:
+      keycloak: 'true'
 - name: Setup keycloak
   docker_swarm_service:
     name: keycloak
@@ -87,6 +108,9 @@
     publish:
       - published_port: 5000
         target_port: 8080
+    placement:
+      constraints:
+        - node.labels.keycloak == true
 
 - name: Setup user-service
   docker_swarm_service:
