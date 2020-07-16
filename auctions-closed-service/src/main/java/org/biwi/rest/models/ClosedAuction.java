@@ -29,7 +29,8 @@ public class ClosedAuction extends PanacheEntityBase {
             JSONObject bid = (JSONObject) b;
             bids.add(new Bid((String)bid.get("idUser"), (Double) bid.get("value")));
         });
-        this.winnerId = bids.first().idUser;
+        Double reservePrice = (Double) json.get("reservePrice");
+        this.winnerId = bids.first().value >= reservePrice ? bids.first().idUser : "" ;
         this.topBid = bids.first().value;
     }
 
