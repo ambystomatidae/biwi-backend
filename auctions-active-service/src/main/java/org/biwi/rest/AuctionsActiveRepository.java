@@ -1,17 +1,12 @@
 package org.biwi.rest;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import io.quarkus.panache.common.Sort;
 import org.biwi.rest.model.AuctionsActive;
 import org.biwi.rest.model.Bid;
-import org.biwi.rest.model.ShortDescription;
-import org.hibernate.query.Query;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,21 +22,6 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
 
     public List<AuctionsActive> getAll(){
         return listAll();
-    }
-
-    public List<ShortDescription> all(){
-        List<ShortDescription> result = new ArrayList<>();
-        List<AuctionsActive> auctions = getAll();
-        if(auctions!=null) {
-            for (AuctionsActive auction : auctions) {
-                //.get()
-                ShortDescription sd= new ShortDescription();
-                sd.setActualPrice(auction.getLastBidValue());
-                result.add(sd);
-            }
-            return result;
-        }
-        return null;
     }
 
     public AuctionsActive validateBid(String id, double value){
