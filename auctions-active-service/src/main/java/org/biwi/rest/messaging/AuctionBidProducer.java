@@ -15,7 +15,7 @@ public class AuctionBidProducer {
             JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE);
             JMSProducer jp = context.createProducer();
             TextMessage tm = context.createTextMessage(String.valueOf(value));
-            jp.send(context.createQueue(id), tm);
+            jp.send(context.createTopic(id), tm);
         }
         catch (Exception e) {
             e.printStackTrace();
