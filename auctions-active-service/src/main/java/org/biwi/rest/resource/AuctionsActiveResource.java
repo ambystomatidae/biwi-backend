@@ -38,6 +38,11 @@ public class AuctionsActiveResource {
     @Inject
     JsonWebToken jwt;
 
+    //APAGAR
+    @Inject
+    AuctionBidProducer auctionbid;
+
+
     @GET
     @Path("/{id}")
     @RolesAllowed("user")
@@ -82,6 +87,7 @@ public class AuctionsActiveResource {
         AuctionsActive auction = new AuctionsActive(auctionsActive.getId(), LocalTime.parse("00:30:00"), auctionsActive.getStartingPrice(), auctionsActive.getReservePrice(), auctionsActive.getSellerId());
         auctActiveRepository.persist(auction);
         if (auctActiveRepository.isPersistent(auction)) {
+            auctionbid.initiate(auction.getId(), auction.getStartingPrice());
             return true;
         }
         return false;
@@ -97,7 +103,8 @@ public class AuctionsActiveResource {
         if (aa == null)
             return Response.status(404).build();
 
-        if (aa.isOpen()|| jwt.getName().equals(b.getIdUser())) {
+        if (aa.isOpen() || jwt.getName().equals(b.getIdUser())) {
+      
             Bid bid = new Bid(b.getIdUser(), b.getValue());
             bid.persist();
             boolean status = auctActiveRepository.addBid(aa, id, bid);

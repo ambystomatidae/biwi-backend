@@ -10,16 +10,29 @@ public class AuctionBidProducer {
     @Inject
     ConnectionFactory connectionFactory;
 
-    public void produce(String id, double value) {
+    private Topic topic;
+
+
+
+    public void initiate(String id, double value ) {
         try {
             JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE);
+            this.topic= context.createTopic(id);
             JMSProducer jp = context.createProducer();
             TextMessage tm = context.createTextMessage(String.valueOf(value));
-            jp.send(context.createTopic(id), tm);
+            jp.send(this.topic, tm);
+
         }
         catch (Exception e) {
             e.printStackTrace();
 
         }
+    }
+
+    public void produce(String id, double value){
+        JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE);
+        JMSProducer jp = context.createProducer();
+        TextMessage tm = context.createTextMessage(String.valueOf(value));
+        jp.send(this.topic, tm);
     }
 }

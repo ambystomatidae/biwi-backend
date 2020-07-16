@@ -25,6 +25,9 @@ public class ActivateAuctionConsumer implements Runnable {
     @Inject
     PrepareToCloseProducer prepareToClose;
 
+    @Inject
+    AuctionBidProducer auctionbid;
+
 
     private final ExecutorService scheduler = Executors.newSingleThreadExecutor();
 
@@ -52,6 +55,7 @@ public class ActivateAuctionConsumer implements Runnable {
                 if(auctActiveRepository.findById(auction.getAuctionId())==null){
                     AuctionsActive aa= auctActiveRepository.newAuction(auction.getAuctionId(),auction.getDuration(),auction.getStartingPrice(),auction.getReservePrice(),auction.getSellerId());
                     prepareToClose.produce(aa.getId(),aa.getEndTimeAuction());
+                    auctionbid.initiate(aa.getId(), aa.getStartingPrice());
                 }
             }
         } catch (Exception e) {
