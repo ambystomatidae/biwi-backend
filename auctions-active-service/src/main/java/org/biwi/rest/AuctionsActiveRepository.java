@@ -72,6 +72,13 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
         return query.list();
     }
 
+    @Transactional
+    public boolean setOpen(String id, boolean status) {
+        AuctionsActive auc = findById(id);
+        auc.setOpen(status);
+        return status;
+    }
+
 
 
 }
