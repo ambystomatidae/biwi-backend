@@ -68,7 +68,14 @@ public class AuctionsActiveResource {
         }
         return Response.status(400).build();
     }
-    
+
+
+    @GET
+    @Path("/hotpicks")
+    public Response getHotpicks(){
+        List<AuctionsActive> aa= auctActiveRepository.getHotpicks();
+        return Response.ok(aa).build();
+    }
 
    @POST
    @Transactional

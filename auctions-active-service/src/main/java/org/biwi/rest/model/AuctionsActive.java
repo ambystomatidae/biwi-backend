@@ -3,6 +3,7 @@ package org.biwi.rest.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -21,6 +22,7 @@ public class AuctionsActive extends PanacheEntityBase {
     private List<Bid> bids;
     private String sellerId;
     @JsonIgnore
+    @JsonbTransient
     private boolean open;
 
 
@@ -102,7 +104,7 @@ public class AuctionsActive extends PanacheEntityBase {
         this.sellerId = sellerId;
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public Bid getLastBid(){
         int size=this.bids.size();
         if(size!=0){
@@ -111,7 +113,7 @@ public class AuctionsActive extends PanacheEntityBase {
         return null;
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public double getLastBidValue(){
         if(this.getLastBid() !=null){
             return this.getLastBid().getValue();
@@ -119,10 +121,10 @@ public class AuctionsActive extends PanacheEntityBase {
         return this.startingPrice;
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public LocalDateTime getEndTimeAuction(){
         LocalTime t= this.duration;
-        LocalDateTime nw= LocalDateTime.now();
+        LocalDateTime nw= LocalDateTime.now().plusHours(1);
         LocalDateTime end= nw.plusHours(t.getHour()).plusMinutes(t.getMinute()).plusSeconds(t.getSecond()).plusNanos(t.getNano());
         System.out.println(end);
         return end;

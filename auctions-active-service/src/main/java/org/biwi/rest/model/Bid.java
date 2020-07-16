@@ -18,7 +18,7 @@ public class Bid extends PanacheEntity {
     public Bid(String idUser, double value){
         this.idUser = idUser;
         this.value = value;
-        this.timeStamp = LocalDateTime.now();
+        this.timeStamp = LocalDateTime.now().plusHours(1);
     }
 
     public double getValue() {

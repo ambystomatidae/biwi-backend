@@ -1,8 +1,12 @@
 package org.biwi.rest;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Sort;
 import org.biwi.rest.model.AuctionsActive;
 import org.biwi.rest.model.Bid;
 import org.biwi.rest.model.ShortDescription;
+import org.hibernate.query.Query;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -82,9 +86,11 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
     }
 
 
-
-
-
+    public List<AuctionsActive> getHotpicks (){
+        LocalDateTime limit = LocalDateTime.now().plusHours(1).minusMinutes(10);
+        PanacheQuery<AuctionsActive> query = find("select a.id from AuctionsActive a inner join a.bids as b where b.timeStamp > ?1 group by a.id order by sum(b.value) desc ", limit);
+        return query.list();
+    }
 
 
 
