@@ -8,8 +8,6 @@ import org.biwi.rest.*;
 import org.biwi.rest.model.AuctionsActive;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.eclipse.microprofile.jwt.JsonWebToken;
-
-
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -99,8 +97,7 @@ public class AuctionsActiveResource {
         if (aa == null)
             return Response.status(404).build();
 
-        if (aa.isOpen() //|| jwt.getName().equals(b.getIdUser())) {
-        ){
+        if (aa.isOpen()|| jwt.getName().equals(b.getIdUser())) {
             Bid bid = new Bid(b.getIdUser(), b.getValue());
             bid.persist();
             boolean status = auctActiveRepository.addBid(aa, id, bid);
