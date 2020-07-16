@@ -91,7 +91,8 @@ public class AuctionDescriptionResource {
     @POST
     @RolesAllowed("user")
     public Response add(AuctionDescriptionPostRequest desc) {
-        if(desc.getSellerId() != jwt.getName())
+        System.out.println("name:" + jwt.getName() + ". id: " + desc.getSellerId());
+        if(!desc.getSellerId().equals(jwt.getName()))
             return Response.status(403).build();
 
         AuctionDescription ad = new AuctionDescription(desc);
