@@ -30,7 +30,7 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
             double lower = filter.getLowerPrice() != null ? filter.getLowerPrice() : 0;
             double higher = filter.getHigherPrice() != null ? filter.getHigherPrice() : Double.MAX_VALUE;
             if(hotpick){
-                query = find("select a from AuctionsActive a inner join a.bids as b where b.timeStamp > ?1 and lastBidValue > ?2 and lastBidValue < ?3 group by a.id order by sum(b.value) desc ", Sort.by(sortBy) ,limit,lower,higher);
+                query = find("select a from AuctionsActive a inner join a.bids as b where b.timeStamp > ?1 and lastBidValue > ?2 and lastBidValue < ?3 group by a.id ", Sort.by(sortBy) ,limit,lower,higher);
             }
             else{
                 query = find("from AuctionsActive where lastBidValue > ?1 and lastBidValue < ?2", Sort.by(sortBy), lower, higher);

@@ -80,14 +80,14 @@ public class AuctionsActiveResource {
     @Path("/hotpicks")
     public Response getHotpicks(@DefaultValue("0") @QueryParam("page") int page,
                                 @DefaultValue("20") @QueryParam("pageSize") int pageSize,
-                                @DefaultValue("duration") @QueryParam("sortBy") String sortBy,
+                                @DefaultValue("sum(b.value) desc") @QueryParam("sortBy") String sortBy,
                                 @DefaultValue("0") @QueryParam("lowerPrice") double lowerPrice,
                                 @DefaultValue("200000000") @QueryParam("higherPrice") double higherPrice){
         Filter filter = new Filter();
         filter.setHigherPrice(higherPrice);
         filter.setLowerPrice(lowerPrice);
         List<AuctionsActive> aa= auctActiveRepository.getAll(pageSize, page, filter, sortBy,true);
-       if (aa != null) {
+        if (aa != null) {
             List<ShortDescription> result= this.getShortDescription(aa);
             return Response.ok(result).build();
         }
