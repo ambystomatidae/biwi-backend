@@ -55,7 +55,7 @@ public class ClosedAuctionsConsumer implements Runnable {
                 requestsHandler.removeAuction(auction.id);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
