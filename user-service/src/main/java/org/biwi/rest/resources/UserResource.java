@@ -140,11 +140,12 @@ public class UserResource {
     @Path("user/watchlist/{auctionId}")
     public Response removeFromWatchlist(@PathParam("auctionId") String auctionId){
         BiwiUser persistedUser = userRepository.findById(accessToken.getName());
+        Auction auction = new Auction(auctionId);
 
-        if (!persistedUser.watchlist.contains(auctionId))
+        if (!persistedUser.watchlist.contains(auction))
             return Response.status(409).entity("{\"errorMessage\": \"Auction not in watchlist\"}").build();
 
-        persistedUser.removeFromWatchlist(new Auction(auctionId));
+        persistedUser.removeFromWatchlist(auction);
         return Response.ok(persistedUser.watchlist).build();
     }
 
