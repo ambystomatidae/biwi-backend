@@ -3,7 +3,8 @@
   "extra_config": {
     "github_com/devopsfaith/krakend-cors": {
       "allow_origins": [
-        "*"
+        "http://localhost:8080/",
+        "http*"
       ],
       "expose_headers": [
         "Content-Length"
@@ -20,7 +21,7 @@
   },
   "port": 8080,
   "timeout": "20000ms",
-  "cache_ttl": "300s",
+  "cache_ttl": "0s",
   "output_encoding": "json",
   "name": "biwi-gateway",
   "disable_rest": false,
@@ -88,7 +89,7 @@
     {
       "endpoint": "/signup",
       "method": "POST",
-      "extra_config": {},
+      "extra_config": { },
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
@@ -255,7 +256,8 @@
             "collection": "auctions"
           }
         }
-      ]
+      ],
+      "headers_to_pass": []
     },
     {
       "endpoint": "/auctions/scheduled",
@@ -263,7 +265,14 @@
       "extra_config": {},
       "output_encoding": "json",
       "concurrent_calls": 1,
-      "querystring_params": [],
+      "querystring_params": [
+        "page",
+        "pageSize",
+        "categories",
+        "lowerPrice",
+        "higherPrice",
+        "sortBy"
+      ],
       "backend": [
         {
           "url_pattern": "/v1/all",
@@ -281,7 +290,41 @@
             "collection": "auctions"
           }
         }
-      ]
+      ],
+      "headers_to_pass": []
+    },
+    {
+      "endpoint": "/auctions/hotpicks",
+      "method": "GET",
+      "output_encoding": "json",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/hotpicks",
+          "encoding": "json",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "host": [
+            "http://auctions-active:8080"
+          ],
+          "disable_host_sanitize": false,
+          "is_collection": true,
+          "target": "",
+          "mapping": {
+            "collection": "auctions"
+          }
+        }
+      ],
+      "querystring_params": [
+        "page",
+        "pageSize",
+        "categories",
+        "lowerPrice",
+        "higherPrice",
+        "sortBy"
+      ],
+      "headers_to_pass": []
     },
     {
       "endpoint": "/auctions",
@@ -324,19 +367,9 @@
             "http://auctions-active:8080"
           ],
           "disable_host_sanitize": false
-        },
-        {
-          "url_pattern": "/v1/user/{resp0_sellerId}",
-          "encoding": "json",
-          "sd": "static",
-          "method": "GET",
-          "extra_config": {},
-          "host": [
-            "http://user:8080"
-          ],
-          "disable_host_sanitize": false
         }
-      ]
+      ],
+      "headers_to_pass": []
     },
     {
       "endpoint": "/auction/{id}",
@@ -355,30 +388,6 @@
             "http://auctions-active:8080"
           ],
           "disable_host_sanitize": false
-        }
-      ]
-    },
-    {
-      "endpoint": "/auctions/hotpicks",
-      "method": "GET",
-      "output_encoding": "json",
-      "extra_config": {},
-      "backend": [
-        {
-          "url_pattern": "/hotpicks",
-          "encoding": "json",
-          "sd": "static",
-          "method": "GET",
-          "extra_config": {},
-          "host": [
-            "http://auctions-active:8080"
-          ],
-          "disable_host_sanitize": false,
-          "is_collection": true,
-          "target": "",
-          "mapping": {
-            "collection": "auctions"
-          }
         }
       ]
     }
