@@ -45,7 +45,7 @@
           "disable_host_sanitize": false
         },
         {
-          "url_pattern": "/v1/auctions-active/hot",
+          "url_pattern": "/active/hotpicks",
           "encoding": "json",
           "sd": "static",
           "extra_config": {},

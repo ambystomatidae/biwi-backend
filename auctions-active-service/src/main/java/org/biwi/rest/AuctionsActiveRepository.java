@@ -23,7 +23,7 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
         return find("id", id).firstResult();
     }
 
-    public List<AuctionsActive> getAll(int pageSize, int page, Filter filter, String sortBy, Boolean hotpick) {
+    public List<AuctionsActive> getAll(int pageSize, int page, Filter filter, String sortBy, boolean hotpick) {
         PanacheQuery<AuctionsActive> query;
         LocalDateTime limit = LocalDateTime.now().plusHours(1).minusMinutes(10);
         if (filter != null && filter.byPrice()) {
