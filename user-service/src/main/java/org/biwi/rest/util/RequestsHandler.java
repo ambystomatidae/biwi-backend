@@ -121,10 +121,8 @@ public class RequestsHandler {
 
 
     public boolean isActiveAuction(Auction auction) throws IOException, ParseException, AuthenticationException {
-        String token = getAdminToken();
         HttpClient client = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(activeAuctionsServiceUrl + "/" + activeAuctionsGetPath + "/" + auction.auctionId);
-        httpGet.addHeader("Authorization", "Bearer " + token);
 
         HttpResponse httpResponse = client.execute(httpGet);
 
@@ -135,10 +133,8 @@ public class RequestsHandler {
     }
 
     public boolean isValidReview(String reviewerId, String reviewdId, String auctionId) throws ParseException, IOException, AuthenticationException {
-        String token = getAdminToken();
         HttpClient client = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(closedAuctionsServiceUrl + "/" + closedAuctionsGetPath + "/" + auctionId);
-        httpGet.addHeader("Authorization", "Bearer " + token);
 
         HttpResponse httpResponse = client.execute(httpGet);
 

@@ -41,7 +41,6 @@ public class RequestsHandler {
 
     String activeAuctionsServiceUrl = ConfigProvider.getConfig().getValue("active-auctions.service.url", String.class);
 
-    String getPath = ConfigProvider.getConfig().getValue("active-auctions.service.get-auction.path", String.class);
 
     String userServiceUrl = ConfigProvider.getConfig().getValue("user.service.url", String.class);
 
@@ -80,50 +79,5 @@ public class RequestsHandler {
         HttpResponse httpResponse = client.execute(deleteFromWatchlist);
     }
 
-    // Token related
 
-    private String getAdminToken() throws IOException, AuthenticationException, ParseException {
-        if (adminToken == null) {
-            System.out.println("Getting new admin token");
-            adminToken = new Token(getToken(adminUsername, adminPassword));
-        }
-
-        if (!adminToken.isValid()) {
-            System.out.println("Refreshing admin token");
-            adminToken = new Token(refreshToken(adminToken.refresh_token));
-        }
-        return adminToken.access_token;
-    }
-
-    public JSONObject getToken(String username, String password) throws IOException, AuthenticationException, ParseException {
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("username", username));
-        params.add(new BasicNameValuePair("password", password));
-        params.add(new BasicNameValuePair("grant_type", "password"));
-
-        return postTokenService(params);
-    }
-
-    public JSONObject refreshToken(String refreshToken) throws IOException, AuthenticationException, ParseException {
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("refresh_token", refreshToken));
-        params.add(new BasicNameValuePair("grant_type", "refresh_token"));
-
-        return postTokenService(params);
-    }
-
-    private JSONObject postTokenService(List<NameValuePair> params) throws IOException, AuthenticationException, ParseException {
-        JSONParser js = new JSONParser();
-        HttpClient client = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(tokenServiceUrl);
-
-        httpPost.setEntity(new UrlEncodedFormEntity(params));
-
-        UsernamePasswordCredentials creds
-                = new UsernamePasswordCredentials(client_id, secret);
-        httpPost.addHeader(new BasicScheme().authenticate(creds, httpPost, null));
-
-        HttpResponse response = client.execute(httpPost);
-        return (JSONObject) js.parse(new BasicResponseHandler().handleResponse(response));
-    }
 }

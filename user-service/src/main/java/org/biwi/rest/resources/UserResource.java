@@ -5,7 +5,6 @@ import org.apache.http.auth.AuthenticationException;
 import org.biwi.rest.models.*;
 import org.biwi.rest.repositories.UserRepository;
 import org.biwi.rest.services.BucketManager;
-import org.biwi.rest.services.ImageEncoderUtil;
 import org.biwi.rest.util.RequestsHandler;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -13,7 +12,6 @@ import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jose4j.json.internal.json_simple.*;
 import org.jose4j.json.internal.json_simple.parser.ParseException;
 
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -21,7 +19,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
-import java.util.UUID;
 
 @Path("/v1")
 @Produces(MediaType.APPLICATION_JSON)
@@ -74,9 +71,12 @@ public class UserResource {
             String[] parsed = location.split("/");
             String id = parsed[parsed.length - 1];
             requestsHandler.updateUsername(id);
+            /*
             UUID fileId = UUID.randomUUID();
             String imageURI = bucketManager.storeImage(ImageEncoderUtil.decode(user.encodedImage), fileId.toString() + ".jpeg");
-            BiwiUser savedUser = new BiwiUser(id, user.email, imageURI);
+            */
+            BiwiUser savedUser = new BiwiUser(id, user.email, "");
+
             userRepository.persist(savedUser);
             return Response.created(URI.create(version + "/" + id)).entity(savedUser).build();
         } catch (Exception e) {
@@ -86,14 +86,12 @@ public class UserResource {
 
 
     @GET
-    @RolesAllowed("viewUsers")
     @Path("/user")
     public Response getCurrentUser() throws IOException, ParseException {
         return getUserById(accessToken.getName());
     }
 
     @GET
-    @RolesAllowed("viewUsers")
     @Path("/user/{userId}")
     public Response getUserById(@PathParam("userId") String userId) throws IOException, ParseException {
         String token = accessToken.getRawToken();
@@ -109,7 +107,6 @@ public class UserResource {
     }
 
     @GET
-    @RolesAllowed("user")
     @Path("user/watchlist")
     public Response getUserWatchlist() {
         BiwiUser persistedUser = userRepository.findById(accessToken.getName());
@@ -119,7 +116,6 @@ public class UserResource {
 
     @POST
     @Transactional
-    @RolesAllowed("user")
     @Path("user/watchlist")
     public Response addToUserWatchList(Auction auction) throws ParseException, IOException, AuthenticationException {
         if (!auction.isValid())
@@ -136,7 +132,6 @@ public class UserResource {
 
     @DELETE
     @Transactional
-    @RolesAllowed("user")
     @Path("user/watchlist/{auctionId}")
     public Response removeFromWatchlist(@PathParam("auctionId") String auctionId){
         BiwiUser persistedUser = userRepository.findById(accessToken.getName());
@@ -159,7 +154,6 @@ public class UserResource {
 
     @POST
     @Transactional
-    @RolesAllowed("user")
     @Path("user/review/{userId}")
     public Response addReview(@PathParam("userId") String userId, Score score) throws ParseException, IOException, AuthenticationException {
         if (!score.isValid())
@@ -180,7 +174,6 @@ public class UserResource {
 
     @POST
     @Transactional
-    @RolesAllowed("user")
     @Path("/refresh")
     public Response refreshToken(Token token) {
         if (!token.isValidRefresh())
@@ -196,7 +189,6 @@ public class UserResource {
 
     @GET
     @Path("/validate")
-    @RolesAllowed("user")
     @NoCache
     public User me() {
         return new User(identity);
