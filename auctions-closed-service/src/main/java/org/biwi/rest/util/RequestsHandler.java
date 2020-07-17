@@ -61,13 +61,11 @@ public class RequestsHandler {
 
     Token adminToken;
 
-    public JSONObject getAuctionData(String auctionId) throws IOException, ParseException, AuthenticationException {
-        String token = getAdminToken();
+    public JSONObject getAuctionData(String auctionId) throws IOException, ParseException {
         HttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(activeAuctionsServiceUrl + "/" + getPath + "/" + auctionId);
-        httpGet.addHeader("Authorization", "Bearer " + token);
+        HttpDelete deleteFromActive = new HttpDelete(activeAuctionsServiceUrl + "/" + removePath + "/" + auctionId);
 
-        HttpResponse httpResponse = client.execute(httpGet);
+        HttpResponse httpResponse = client.execute(deleteFromActive);
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
         JSONParser js = new JSONParser();
@@ -75,13 +73,11 @@ public class RequestsHandler {
         return (JSONObject) js.parse(response);
     }
 
-    public void removeAuction(String auctionId) throws IOException, AuthenticationException, ParseException {
+    public void removeAuction(String auctionId) throws IOException {
         HttpClient client = HttpClients.createDefault();
-        HttpDelete deleteFromActive = new HttpDelete(activeAuctionsServiceUrl + "/" + removePath + "/" + auctionId);
         HttpDelete deleteFromWatchlist = new HttpDelete(userServiceUrl + "/" + watchlistPath + "/" + auctionId);
 
-        HttpResponse httpResponse = client.execute(deleteFromActive);
-        HttpResponse httpResponse2 = client.execute(deleteFromWatchlist);
+        HttpResponse httpResponse = client.execute(deleteFromWatchlist);
     }
 
     // Token related
