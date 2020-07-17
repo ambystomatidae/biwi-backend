@@ -338,12 +338,7 @@
           "host": [
             "http://auctions-active:8080"
           ],
-          "disable_host_sanitize": false,
-          "is_collection": true,
-          "target": "",
-          "mapping": {
-            "collection": "auctions"
-          }
+          "disable_host_sanitize": false
         }
       ],
       "headers_to_pass": []
@@ -372,9 +367,7 @@
           "host": [
             "http://auctions-scheduled:8080"
           ],
-          "disable_host_sanitize": false,
-          "is_collection": true,
-          "target": ""
+          "disable_host_sanitize": false
         }
       ],
       "headers_to_pass": []
@@ -394,12 +387,7 @@
           "host": [
             "http://auctions-active:8080"
           ],
-          "disable_host_sanitize": false,
-          "is_collection": true,
-          "target": "",
-          "mapping": {
-            "collection": "auctions"
-          }
+          "disable_host_sanitize": false
         }
       ],
       "querystring_params": [
