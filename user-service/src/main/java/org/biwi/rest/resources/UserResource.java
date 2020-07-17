@@ -76,8 +76,9 @@ public class UserResource {
             requestsHandler.updateUsername(id);
             UUID fileId = UUID.randomUUID();
             String imageURI = bucketManager.storeImage(ImageEncoderUtil.decode(user.encodedImage), fileId.toString() + ".jpeg");
-            userRepository.persist(new BiwiUser(id, user.email, imageURI));
-            return Response.created(URI.create(version + "/" + id)).build();
+            BiwiUser savedUser = new BiwiUser(id, user.email, imageURI);
+            userRepository.persist(savedUser);
+            return Response.created(URI.create(version + "/" + id)).entity(savedUser).build();
         } catch (Exception e) {
             return Response.status(409).entity(e.getMessage()).build();
         }
