@@ -23,7 +23,7 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
         return find("id", id).firstResult();
     }
 
-    public List<AuctionsActive> getAll(int pageSize, int page, Filter filter, String sortBy, boolean hotpick) {
+    public PanacheQuery<AuctionsActive> getAll(int pageSize, int page, Filter filter, String sortBy, boolean hotpick) {
         PanacheQuery<AuctionsActive> query;
         LocalDateTime limit = LocalDateTime.now().plusHours(1).minusMinutes(10);
         if (filter != null && filter.byPrice()) {
@@ -39,7 +39,7 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
         else{
             query = find("select a from AuctionsActive a inner join a.bids as b where b.timeStamp > ?1 group by a.id order by sum(b.value) desc ", Sort.by(sortBy) ,limit);
         }
-        return query.page(Page.of(page, pageSize)).list();
+        return query;
     }
 
 
@@ -91,6 +91,8 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
         auc.setOpen(status);
         return status;
     }
+
+
 
 
 

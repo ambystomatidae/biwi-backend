@@ -1,12 +1,12 @@
 package org.biwi.rest.resource;
 
-import org.biwi.rest.model.Filter;
+import io.quarkus.hibernate.orm.panache.Panache;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Page;
+import org.biwi.rest.model.*;
 import org.biwi.external.ShortDescriptionService;
-import org.biwi.rest.model.Bid;
-import org.biwi.rest.model.ShortDescription;
 import org.biwi.rest.messaging.*;
 import org.biwi.rest.*;
-import org.biwi.rest.model.AuctionsActive;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import javax.annotation.security.RolesAllowed;
@@ -39,10 +39,6 @@ public class AuctionsActiveResource {
     @Inject
     JsonWebToken jwt;
 
-    //APAGAR
-    @Inject
-    AuctionBidProducer auctionbid;
-
 
     @GET
     @Path("/{id}")
@@ -68,10 +64,12 @@ public class AuctionsActiveResource {
         Filter filter = new Filter();
         filter.setHigherPrice(higherPrice);
         filter.setLowerPrice(lowerPrice);
-        List<AuctionsActive> all = auctActiveRepository.getAll(pageSize, page, filter, sortBy,false);
-        if (all != null) {
-            List<ShortDescription> result= this.getShortDescription(all);
-            return Response.ok(result).build();
+        PanacheQuery query= auctActiveRepository.getAll(pageSize, page, filter, sortBy,true);
+        List<AuctionsActive> aa = query.page(Page.of(page, pageSize)).list();
+        if ( aa!= null) {
+            List<ShortDescription> result= this.getShortDescription(aa);
+            ShortDescriptionResponse response= new ShortDescriptionResponse(result,query.pageCount(),query.count());
+            return Response.ok(response).build();
         }
         return Response.status(400).build();
     }
@@ -86,10 +84,12 @@ public class AuctionsActiveResource {
         Filter filter = new Filter();
         filter.setHigherPrice(higherPrice);
         filter.setLowerPrice(lowerPrice);
-        List<AuctionsActive> aa= auctActiveRepository.getAll(pageSize, page, filter, sortBy,true);
-        if (aa != null) {
+        PanacheQuery query= auctActiveRepository.getAll(pageSize, page, filter, sortBy,true);
+        List<AuctionsActive> aa = query.page(Page.of(page, pageSize)).list();
+        if ( aa!= null) {
             List<ShortDescription> result= this.getShortDescription(aa);
-            return Response.ok(result).build();
+            ShortDescriptionResponse response= new ShortDescriptionResponse(result,query.pageCount(),query.count());
+            return Response.ok(response).build();
         }
         return Response.status(400).build();
     }
@@ -102,7 +102,7 @@ public class AuctionsActiveResource {
         AuctionsActive auction = new AuctionsActive(auctionsActive.getId(), LocalTime.parse("00:30:00"), auctionsActive.getStartingPrice(), auctionsActive.getReservePrice(), auctionsActive.getSellerId());
         auctActiveRepository.persist(auction);
         if (auctActiveRepository.isPersistent(auction)) {
-            auctionbid.initiate(auction.getId(), auction.getStartingPrice());
+            auctionBid.initiate(auction.getId(), auction.getStartingPrice());
             return true;
         }
         return false;
