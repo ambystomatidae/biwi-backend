@@ -129,7 +129,20 @@
     {
       "endpoint": "/profile",
       "method": "GET",
-      "extra_config": {},
+      "extra_config": {
+        "github.com/devopsfaith/krakend-jose/validator": {
+          "alg": "RS256",
+          "jwk-url": "http://keycloak:8080/auth/realms/biwi/protocol/openid-connect/certs",
+          "disable_jwk_security": true,
+          "roles": [
+            "user",
+            "viewUsers"
+          ],
+          "roles_key": "realm_access.roles",
+          "audience": ["realm-management", "account"],
+          "issuer": "http://keycloak:8080/auth/realms/biwi"
+        }
+      },      
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
@@ -143,13 +156,37 @@
             "http://user:8080"
           ],
           "disable_host_sanitize": false
+        },
+        {
+          "url_pattern": "/v1/user",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {},
+          "method": "GET",
+          "host": [
+            "http://auctions-closed:8080"
+          ],
+          "disable_host_sanitize": false
         }
       ]
     },
     {
       "endpoint": "/review/{id}",
       "method": "POST",
-      "extra_config": {},
+      "extra_config": {
+        "github.com/devopsfaith/krakend-jose/validator": {
+          "alg": "RS256",
+          "jwk-url": "http://keycloak:8080/auth/realms/biwi/protocol/openid-connect/certs",
+          "disable_jwk_security": true,
+          "roles": [
+            "user",
+            "viewUsers"
+          ],
+          "roles_key": "realm_access.roles",
+          "audience": ["realm-management", "account"],
+          "issuer": "http://keycloak:8080/auth/realms/biwi"
+        }
+      },      
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
@@ -169,7 +206,20 @@
     {
       "endpoint": "/watchlist",
       "method": "GET",
-      "extra_config": {},
+      "extra_config": {
+        "github.com/devopsfaith/krakend-jose/validator": {
+          "alg": "RS256",
+          "jwk-url": "http://keycloak:8080/auth/realms/biwi/protocol/openid-connect/certs",
+          "disable_jwk_security": true,
+          "roles": [
+            "user",
+            "viewUsers"
+          ],
+          "roles_key": "realm_access.roles",
+          "audience": ["realm-management", "account"],
+          "issuer": "http://keycloak:8080/auth/realms/biwi"
+        }
+      },      
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
@@ -178,7 +228,20 @@
           "encoding": "json",
           "sd": "static",
           "method": "GET",
-          "extra_config": {},
+          "extra_config": {
+            "github.com/devopsfaith/krakend-jose/validator": {
+              "alg": "RS256",
+              "jwk-url": "http://keycloak:8080/auth/realms/biwi/protocol/openid-connect/certs",
+              "disable_jwk_security": true,
+              "roles": [
+                "user",
+                "viewUsers"
+              ],
+              "roles_key": "realm_access.roles",
+              "audience": ["realm-management", "account"],
+              "issuer": "http://keycloak:8080/auth/realms/biwi"
+            }
+          },          
           "host": [
             "http://user:8080"
           ],
@@ -189,7 +252,20 @@
     {
       "endpoint": "/watchlist",
       "method": "POST",
-      "extra_config": {},
+      "extra_config": {
+        "github.com/devopsfaith/krakend-jose/validator": {
+          "alg": "RS256",
+          "jwk-url": "http://keycloak:8080/auth/realms/biwi/protocol/openid-connect/certs",
+          "disable_jwk_security": true,
+          "roles": [
+            "user",
+            "viewUsers"
+          ],
+          "roles_key": "realm_access.roles",
+          "audience": ["realm-management", "account"],
+          "issuer": "http://keycloak:8080/auth/realms/biwi"
+        }
+      },      
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
@@ -210,7 +286,20 @@
       "endpoint": "/watchlist/{id}",
       "method": "DELETE",
       "output_encoding": "json",
-      "extra_config": {},
+      "extra_config": {
+        "github.com/devopsfaith/krakend-jose/validator": {
+          "alg": "RS256",
+          "jwk-url": "http://keycloak:8080/auth/realms/biwi/protocol/openid-connect/certs",
+          "disable_jwk_security": true,
+          "roles": [
+            "user",
+            "viewUsers"
+          ],
+          "roles_key": "realm_access.roles",
+          "audience": ["realm-management", "account"],
+          "issuer": "http://keycloak:8080/auth/realms/biwi"
+        }
+      },
       "backend": [
         {
           "url_pattern": "/v1/user/watchlist/{id}",
@@ -285,10 +374,7 @@
           ],
           "disable_host_sanitize": false,
           "is_collection": true,
-          "target": "",
-          "mapping": {
-            "collection": "auctions"
-          }
+          "target": ""
         }
       ],
       "headers_to_pass": []
@@ -300,7 +386,7 @@
       "extra_config": {},
       "backend": [
         {
-          "url_pattern": "/hotpicks",
+          "url_pattern": "/active/hotpicks",
           "encoding": "json",
           "sd": "static",
           "method": "GET",
@@ -329,7 +415,20 @@
     {
       "endpoint": "/auctions",
       "method": "POST",
-      "extra_config": {},
+      "extra_config": {
+        "github.com/devopsfaith/krakend-jose/validator": {
+          "alg": "RS256",
+          "jwk-url": "http://keycloak:8080/auth/realms/biwi/protocol/openid-connect/certs",
+          "disable_jwk_security": true,
+          "roles": [
+            "user",
+            "viewUsers"
+          ],
+          "roles_key": "realm_access.roles",
+          "audience": ["realm-management", "account"],
+          "issuer": "http://keycloak:8080/auth/realms/biwi"
+        }
+      },      
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
@@ -352,6 +451,18 @@
       "extra_config": {
         "github.com/devopsfaith/krakend/proxy": {
           "sequential": true
+        },
+        "github.com/devopsfaith/krakend-jose/validator": {
+          "alg": "RS256",
+          "jwk-url": "http://keycloak:8080/auth/realms/biwi/protocol/openid-connect/certs",
+          "disable_jwk_security": true,
+          "roles": [
+            "user",
+            "viewUsers"
+          ],
+          "roles_key": "realm_access.roles",
+          "audience": ["realm-management", "account"],
+          "issuer": "http://keycloak:8080/auth/realms/biwi"
         }
       },
       "output_encoding": "json",
@@ -367,6 +478,17 @@
             "http://auctions-active:8080"
           ],
           "disable_host_sanitize": false
+        },
+        {
+          "url_pattern": "/v1/{id}",
+          "encoding": "json",
+          "sd": "static",
+          "extra_config": {},
+          "method": "GET",
+          "host": [
+            "http://auctions-description:8080"
+          ],
+          "disable_host_sanitize": false
         }
       ],
       "headers_to_pass": []
@@ -374,7 +496,20 @@
     {
       "endpoint": "/auction/{id}",
       "method": "POST",
-      "extra_config": {},
+      "extra_config": {
+        "github.com/devopsfaith/krakend-jose/validator": {
+          "alg": "RS256",
+          "jwk-url": "http://keycloak:8080/auth/realms/biwi/protocol/openid-connect/certs",
+          "disable_jwk_security": true,
+          "roles": [
+            "user",
+            "viewUsers"
+          ],
+          "roles_key": "realm_access.roles",
+          "audience": ["realm-management", "account"],
+          "issuer": "http://keycloak:8080/auth/realms/biwi"
+        }
+      },      
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
