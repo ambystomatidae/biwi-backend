@@ -122,7 +122,7 @@ public class UserResource {
     @RolesAllowed("user")
     @Path("user/watchlist")
     public Response addToUserWatchList(Auction auction) throws ParseException, IOException, AuthenticationException {
-        if (!auction.isValid() || !requestsHandler.isActiveAuction(auction))
+        if (!auction.isValid())
             return Response.status(400).build();
 
         BiwiUser persistedUser = userRepository.findById(accessToken.getName());
