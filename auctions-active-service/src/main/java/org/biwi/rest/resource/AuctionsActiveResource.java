@@ -124,7 +124,7 @@ public class AuctionsActiveResource {
             boolean status = auctActiveRepository.addBid(aa, bid);
             if (status) {
                 auctionBid.produce(id, bid.getValue());
-                return Response.status(200).build();
+                return Response.ok(bid).build();
             }
             return Response.status(409).build();
         }
