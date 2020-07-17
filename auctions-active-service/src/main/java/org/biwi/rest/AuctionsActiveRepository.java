@@ -3,7 +3,7 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
-import org.biwi.external.Filter;
+import org.biwi.rest.model.Filter;
 import org.biwi.rest.model.AuctionsActive;
 import org.biwi.rest.model.Bid;
 import javax.enterprise.context.ApplicationScoped;

@@ -1,4 +1,4 @@
-package org.biwi.external;
+package org.biwi.rest.model;
 
 import org.biwi.rest.model.AuctionsActive;
 

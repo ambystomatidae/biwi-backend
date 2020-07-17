@@ -1,6 +1,6 @@
 package org.biwi.rest.resource;
 
-import org.biwi.external.Filter;
+import org.biwi.rest.model.Filter;
 import org.biwi.external.ShortDescriptionService;
 import org.biwi.rest.model.Bid;
 import org.biwi.rest.model.ShortDescription;
@@ -71,7 +71,7 @@ public class AuctionsActiveResource {
         List<AuctionsActive> all = auctActiveRepository.getAll(pageSize, page, filter, sortBy,false);
         if (all != null) {
             List<ShortDescription> result= this.getShortDescription(all);
-            return Response.ok(all).build();
+            return Response.ok(result).build();
         }
         return Response.status(400).build();
     }
