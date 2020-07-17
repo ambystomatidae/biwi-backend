@@ -64,12 +64,15 @@ public class AuctionsActiveResource {
         Filter filter = new Filter();
         filter.setHigherPrice(higherPrice);
         filter.setLowerPrice(lowerPrice);
-        PanacheQuery query= auctActiveRepository.getAll(pageSize, page, filter, sortBy,true);
+        PanacheQuery query= auctActiveRepository.getAll(filter, sortBy,false);
         List<AuctionsActive> aa = query.page(Page.of(page, pageSize)).list();
-        if ( aa!= null) {
-            List<ShortDescription> result= this.getShortDescription(aa);
-            ShortDescriptionResponse response= new ShortDescriptionResponse(result,query.pageCount(),query.count());
-            return Response.ok(response).build();
+        if ( aa!= null ) {
+            if(!aa.isEmpty()) {
+                List<ShortDescription> result = this.getShortDescription(aa);
+                ShortDescriptionResponse response= new ShortDescriptionResponse(result,query.pageCount(),query.count());
+                return Response.ok(response).build();
+            }
+            return Response.status(204).build();
         }
         return Response.status(400).build();
     }
@@ -84,16 +87,18 @@ public class AuctionsActiveResource {
         Filter filter = new Filter();
         filter.setHigherPrice(higherPrice);
         filter.setLowerPrice(lowerPrice);
-        PanacheQuery query= auctActiveRepository.getAll(pageSize, page, filter, sortBy,true);
+      PanacheQuery query= auctActiveRepository.getAll(filter, sortBy,true);
         List<AuctionsActive> aa = query.page(Page.of(page, pageSize)).list();
-        if ( aa!= null) {
-            List<ShortDescription> result= this.getShortDescription(aa);
-            ShortDescriptionResponse response= new ShortDescriptionResponse(result,query.pageCount(),query.count());
-            return Response.ok(response).build();
+        if ( aa!= null ) {
+            if(!aa.isEmpty()) {
+                List<ShortDescription> result = this.getShortDescription(aa);
+                ShortDescriptionResponse response= new ShortDescriptionResponse(result,query.pageCount(),query.count());
+                return Response.ok(response).build();
+            }
+            return Response.status(204).build();
         }
         return Response.status(400).build();
     }
-
 
     // Método para testar, eliminar depois
     @POST
