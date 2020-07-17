@@ -1,5 +1,6 @@
 package org.biwi.rest.resource;
 
+import org.biwi.external.Filter;
 import org.biwi.external.ShortDescriptionService;
 import org.biwi.rest.model.Bid;
 import org.biwi.rest.model.ShortDescription;
@@ -7,7 +8,7 @@ import org.biwi.rest.messaging.*;
 import org.biwi.rest.*;
 import org.biwi.rest.model.AuctionsActive;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.eclipse.microprofile.jwt.JsonWebToken;
+//import org.eclipse.microprofile.jwt.JsonWebToken;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -35,8 +36,8 @@ public class AuctionsActiveResource {
     @RestClient
     ShortDescriptionService shortDescriptionService;
 
-    @Inject
-    JsonWebToken jwt;
+  // @Inject
+   // JsonWebToken jwt;
 
     //APAGAR
     @Inject
@@ -45,7 +46,7 @@ public class AuctionsActiveResource {
 
     @GET
     @Path("/{id}")
-    @RolesAllowed("user")
+   // @RolesAllowed("user")
     public Response getByID(@PathParam("id") String id) {
         AuctionsActive a = auctActiveRepository.findById(id);
         if (a != null) {
@@ -59,19 +60,33 @@ public class AuctionsActiveResource {
 
     @GET
     @Path("/all")
-    public Response getAll() {
-        List<AuctionsActive> all = auctActiveRepository.listAll();
-        if (all != null) {
-            List<ShortDescription> result= this.getShortDescription(all);
-            return Response.ok(result).build();
-        }
-        return Response.status(400).build();
+    public Response getAll(@DefaultValue("0") @QueryParam("page") int page,
+                           @DefaultValue("20") @QueryParam("pageSize") int pageSize,
+                           @DefaultValue("duration") @QueryParam("sortBy") String sortBy,
+                           @DefaultValue("0") @QueryParam("lowerPrice") double lowerPrice,
+                           @DefaultValue("200000000") @QueryParam("higherPrice") double higherPrice) {
+        Filter filter = new Filter();
+        filter.setHigherPrice(higherPrice);
+        filter.setLowerPrice(lowerPrice);
+        List<AuctionsActive> all = auctActiveRepository.getAll(pageSize, page, filter, sortBy,false);
+        //if (all != null) {
+       //     List<ShortDescription> result= this.getShortDescription(all);
+            return Response.ok(all).build();
+       // }
+        //return Response.status(400).build();
     }
 
     @GET
     @Path("/hotpicks")
-    public Response getHotpicks(){
-        List<AuctionsActive> aa= auctActiveRepository.getHotpicks();
+    public Response getHotpicks(@DefaultValue("0") @QueryParam("page") int page,
+                                @DefaultValue("20") @QueryParam("pageSize") int pageSize,
+                                @DefaultValue("duration") @QueryParam("sortBy") String sortBy,
+                                @DefaultValue("0") @QueryParam("lowerPrice") double lowerPrice,
+                                @DefaultValue("200000000") @QueryParam("higherPrice") double higherPrice){
+        Filter filter = new Filter();
+        filter.setHigherPrice(higherPrice);
+        filter.setLowerPrice(lowerPrice);
+        List<AuctionsActive> aa= auctActiveRepository.getAll(pageSize, page, filter, sortBy,true);
        if (aa != null) {
             List<ShortDescription> result= this.getShortDescription(aa);
             return Response.ok(result).build();
@@ -96,18 +111,18 @@ public class AuctionsActiveResource {
     @POST
     @Path("/bid/{id}")
     @Transactional
-    @RolesAllowed("user")
+  //  @RolesAllowed("user")
     public Response addBid(@PathParam("id") String id, Bid b) {
         AuctionsActive aa = auctActiveRepository.validateBid(id, b.getValue());
 
         if (aa == null)
             return Response.status(404).build();
 
-        if (aa.isOpen() || jwt.getName().equals(b.getIdUser())) {
-      
+        if (aa.isOpen() //|| jwt.getName().equals(b.getIdUser())) {
+        ){
             Bid bid = new Bid(b.getIdUser(), b.getValue());
             bid.persist();
-            boolean status = auctActiveRepository.addBid(aa, id, bid);
+            boolean status = auctActiveRepository.addBid(aa, bid);
             if (status) {
                 auctionBid.produce(id, bid.getValue());
                 return Response.status(200).build();

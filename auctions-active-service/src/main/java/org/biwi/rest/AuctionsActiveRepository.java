@@ -1,6 +1,9 @@
 package org.biwi.rest;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Page;
+import io.quarkus.panache.common.Sort;
+import org.biwi.external.Filter;
 import org.biwi.rest.model.AuctionsActive;
 import org.biwi.rest.model.Bid;
 import javax.enterprise.context.ApplicationScoped;
@@ -20,9 +23,25 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
         return find("id", id).firstResult();
     }
 
-    public List<AuctionsActive> getAll(){
-        return listAll();
+    public List<AuctionsActive> getAll(int pageSize, int page, Filter filter, String sortBy, Boolean hotpick) {
+        PanacheQuery<AuctionsActive> query;
+        LocalDateTime limit = LocalDateTime.now().plusHours(1).minusMinutes(10);
+        if (filter != null && filter.byPrice()) {
+            double lower = filter.getLowerPrice() != null ? filter.getLowerPrice() : 0;
+            double higher = filter.getHigherPrice() != null ? filter.getHigherPrice() : Double.MAX_VALUE;
+            if(hotpick){
+                query = find("select a from AuctionsActive a inner join a.bids as b where b.timeStamp > ?1 and lastBidValue > ?2 and lastBidValue < ?3 group by a.id order by sum(b.value) desc ", Sort.by(sortBy) ,limit,lower,higher);
+            }
+            else{
+                query = find("from AuctionsActive where lastBidValue > ?1 and lastBidValue < ?2", Sort.by(sortBy), lower, higher);
+            }
+        }
+        else{
+            query = find("select a from AuctionsActive a inner join a.bids as b where b.timeStamp > ?1 group by a.id order by sum(b.value) desc ", Sort.by(sortBy) ,limit);
+        }
+        return query.page(Page.of(page, pageSize)).list();
     }
+
 
     public AuctionsActive validateBid(String id, double value){
 
@@ -37,9 +56,10 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
     }
 
 
-    public boolean addBid(AuctionsActive aa, String id, Bid bid){
+    public boolean addBid(AuctionsActive aa, Bid bid){
         boolean added= aa.addBid(bid);
         if(added){
+            aa.setLastBidValue(bid.getValue());
             return true;
         }
         return false;  
@@ -63,13 +83,6 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
             return aa;
         }
         return null;
-    }
-
-
-    public List<AuctionsActive> getHotpicks (){
-        LocalDateTime limit = LocalDateTime.now().plusHours(1).minusMinutes(10);
-        PanacheQuery<AuctionsActive> query = find("select a from AuctionsActive a inner join a.bids as b where b.timeStamp > ?1 group by a.id order by sum(b.value) desc ", limit);
-        return query.list();
     }
 
     @Transactional

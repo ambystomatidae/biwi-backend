@@ -21,6 +21,7 @@ public class AuctionsActive extends PanacheEntityBase {
     @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Bid> bids;
     private String sellerId;
+    private double lastBidValue;
     @JsonIgnore
     @JsonbTransient
     private boolean open;
@@ -39,6 +40,7 @@ public class AuctionsActive extends PanacheEntityBase {
         this.bids = new ArrayList();
         this.open=true;
         this.sellerId=sellerId;
+        this.lastBidValue=startingPrice;
     }
 
     public String getId() {
@@ -104,6 +106,14 @@ public class AuctionsActive extends PanacheEntityBase {
         this.sellerId = sellerId;
     }
 
+    public void setLastBidValue(double lastBidValue) {
+        this.lastBidValue = lastBidValue;
+    }
+
+    public double getLastBidValue() {
+        return lastBidValue;
+    }
+
     @JsonbTransient
     public Bid getLastBid(){
         int size=this.bids.size();
@@ -113,13 +123,6 @@ public class AuctionsActive extends PanacheEntityBase {
         return null;
     }
 
-    @JsonbTransient
-    public double getLastBidValue(){
-        if(this.getLastBid() !=null){
-            return this.getLastBid().getValue();
-        }
-        return this.startingPrice;
-    }
 
     @JsonbTransient
     public LocalDateTime getEndTimeAuction(){
