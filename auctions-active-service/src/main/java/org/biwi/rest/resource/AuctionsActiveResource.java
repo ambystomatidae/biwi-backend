@@ -8,7 +8,7 @@ import org.biwi.rest.messaging.*;
 import org.biwi.rest.*;
 import org.biwi.rest.model.AuctionsActive;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-//import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -36,8 +36,8 @@ public class AuctionsActiveResource {
     @RestClient
     ShortDescriptionService shortDescriptionService;
 
-  // @Inject
-   // JsonWebToken jwt;
+    @Inject
+    JsonWebToken jwt;
 
     //APAGAR
     @Inject
@@ -46,7 +46,7 @@ public class AuctionsActiveResource {
 
     @GET
     @Path("/{id}")
-   // @RolesAllowed("user")
+    @RolesAllowed("user")
     public Response getByID(@PathParam("id") String id) {
         AuctionsActive a = auctActiveRepository.findById(id);
         if (a != null) {
@@ -69,11 +69,11 @@ public class AuctionsActiveResource {
         filter.setHigherPrice(higherPrice);
         filter.setLowerPrice(lowerPrice);
         List<AuctionsActive> all = auctActiveRepository.getAll(pageSize, page, filter, sortBy,false);
-        //if (all != null) {
-       //     List<ShortDescription> result= this.getShortDescription(all);
+        if (all != null) {
+            List<ShortDescription> result= this.getShortDescription(all);
             return Response.ok(all).build();
-       // }
-        //return Response.status(400).build();
+        }
+        return Response.status(400).build();
     }
 
     @GET
@@ -111,15 +111,14 @@ public class AuctionsActiveResource {
     @POST
     @Path("/bid/{id}")
     @Transactional
-  //  @RolesAllowed("user")
+    @RolesAllowed("user")
     public Response addBid(@PathParam("id") String id, Bid b) {
         AuctionsActive aa = auctActiveRepository.validateBid(id, b.getValue());
 
         if (aa == null)
             return Response.status(404).build();
 
-        if (aa.isOpen() //|| jwt.getName().equals(b.getIdUser())) {
-        ){
+        if (aa.isOpen() || jwt.getName().equals(b.getIdUser())) {
             Bid bid = new Bid(b.getIdUser(), b.getValue());
             bid.persist();
             boolean status = auctActiveRepository.addBid(aa, bid);
