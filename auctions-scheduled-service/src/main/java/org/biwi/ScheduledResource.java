@@ -3,12 +3,14 @@ package org.biwi;
 import org.biwi.external.ShortDescription;
 import org.biwi.external.StartingInfo;
 import org.biwi.external.AuctionsDescriptionService;
+import org.biwi.repositories.ScheduledAuctionResponse;
 import org.biwi.requests.AllStartingRequestObject;
 import org.biwi.models.ScheduledAuction;
 import org.biwi.requests.Filter;
 import org.biwi.requests.ScheduledAuctionRequest;
 import org.biwi.requests.StartingSoonRequestObject;
 import org.biwi.repositories.ScheduledAuctionRepository;
+import org.biwi.responses.AllScheduledResponse;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import javax.enterprise.context.RequestScoped;
@@ -97,12 +99,13 @@ public class ScheduledResource {
         filter.setCategories(categories);
         filter.setHigherPrice(higherPrice);
         filter.setLowerPrice(lowerPrice);
-        List<ScheduledAuction> allScheduled = repository.getAll(pageSize, page, filter, sortBy);
+        ScheduledAuctionResponse allScheduled = repository.getAll(pageSize, page, filter, sortBy);
         List<ShortDescription> result = new ArrayList<>();
-        for(ScheduledAuction s : allScheduled) {
+        for(ScheduledAuction s : allScheduled.getScheduled()) {
             ShortDescription sd = auctionsDescriptionService.getShortDescription(s.getAuctionId());
             result.add(sd);
         }
-        return Response.ok(result).build();
+        AllScheduledResponse response = new AllScheduledResponse(result, allScheduled.getNumberOfPages(), allScheduled.getTotal());
+        return Response.ok(response).build();
     }
 }
