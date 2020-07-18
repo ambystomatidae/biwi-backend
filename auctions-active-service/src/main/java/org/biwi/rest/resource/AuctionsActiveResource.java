@@ -72,7 +72,8 @@ public class AuctionsActiveResource {
                 ShortDescriptionResponse response= new ShortDescriptionResponse(result,query.pageCount(),query.count());
                 return Response.ok(response).build();
             }
-            return Response.status(204).build();
+            List<ShortDescription> sd = new ArrayList<>();
+            return Response.ok(sd).build();
         }
         return Response.status(400).build();
     }
@@ -95,7 +96,8 @@ public class AuctionsActiveResource {
                 ShortDescriptionResponse response= new ShortDescriptionResponse(result,query.pageCount(),query.count());
                 return Response.ok(response).build();
             }
-            return Response.status(204).build();
+            List<ShortDescription> sd = new ArrayList<>();
+            return Response.ok(sd).build();
         }
         return Response.status(400).build();
     }
