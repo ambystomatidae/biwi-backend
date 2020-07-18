@@ -1,29 +1,21 @@
 package org.biwi.rest.util;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.auth.AuthenticationException;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 
 
-import org.biwi.rest.models.Token;
+import org.biwi.rest.models.Score;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jose4j.json.internal.json_simple.JSONObject;
 import org.jose4j.json.internal.json_simple.parser.JSONParser;
 import org.jose4j.json.internal.json_simple.parser.ParseException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RequestsHandler {
 
@@ -41,25 +33,14 @@ public class RequestsHandler {
 
     String activeAuctionsServiceUrl = ConfigProvider.getConfig().getValue("active-auctions.service.url", String.class);
 
-    String getPath = ConfigProvider.getConfig().getValue("active-auctions.service.get-auction.path", String.class);
-
     String userServiceUrl = ConfigProvider.getConfig().getValue("user.service.url", String.class);
 
     String watchlistPath = ConfigProvider.getConfig().getValue("user.service.watchlist.path", String.class);
 
+    String reviewPath = ConfigProvider.getConfig().getValue("user.service.review.path", String.class);
+
     String removePath = ConfigProvider.getConfig().getValue("active-auctions.service.remove-auction.path", String.class);
 
-    String tokenServiceUrl = ConfigProvider.getConfig().getValue("keycloak.token.service", String.class);
-
-    String client_id = ConfigProvider.getConfig().getValue("quarkus.oidc.client-id", String.class);
-
-    String secret = ConfigProvider.getConfig().getValue("quarkus.oidc.credentials.secret", String.class);
-
-    String adminUsername = ConfigProvider.getConfig().getValue("keycloak.admin.username", String.class);
-
-    String adminPassword = ConfigProvider.getConfig().getValue("keycloak.admin.password", String.class);
-
-    Token adminToken;
 
     public JSONObject getAuctionData(String auctionId) throws IOException, ParseException {
         HttpClient client = HttpClients.createDefault();
@@ -80,50 +61,20 @@ public class RequestsHandler {
         HttpResponse httpResponse = client.execute(deleteFromWatchlist);
     }
 
-    // Token related
 
-    private String getAdminToken() throws IOException, AuthenticationException, ParseException {
-        if (adminToken == null) {
-            System.out.println("Getting new admin token");
-            adminToken = new Token(getToken(adminUsername, adminPassword));
-        }
-
-        if (!adminToken.isValid()) {
-            System.out.println("Refreshing admin token");
-            adminToken = new Token(refreshToken(adminToken.refresh_token));
-        }
-        return adminToken.access_token;
-    }
-
-    public JSONObject getToken(String username, String password) throws IOException, AuthenticationException, ParseException {
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("username", username));
-        params.add(new BasicNameValuePair("password", password));
-        params.add(new BasicNameValuePair("grant_type", "password"));
-
-        return postTokenService(params);
-    }
-
-    public JSONObject refreshToken(String refreshToken) throws IOException, AuthenticationException, ParseException {
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("refresh_token", refreshToken));
-        params.add(new BasicNameValuePair("grant_type", "refresh_token"));
-
-        return postTokenService(params);
-    }
-
-    private JSONObject postTokenService(List<NameValuePair> params) throws IOException, AuthenticationException, ParseException {
-        JSONParser js = new JSONParser();
+    public void addToUserScore(Score score, String token) throws IOException {
         HttpClient client = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(tokenServiceUrl);
+        HttpPost httpPost = new HttpPost(userServiceUrl + "/" + reviewPath + "/" + score.userId);
 
-        httpPost.setEntity(new UrlEncodedFormEntity(params));
+        JSONObject reviewData = new JSONObject();
+        reviewData.put("rating", score.rating);
+        reviewData.put("auctionId", score.auctionId);
 
-        UsernamePasswordCredentials creds
-                = new UsernamePasswordCredentials(client_id, secret);
-        httpPost.addHeader(new BasicScheme().authenticate(creds, httpPost, null));
+        StringEntity params = new StringEntity(reviewData.toString());
+        httpPost.addHeader("content-type", "application/json");
+        httpPost.addHeader("Authorization", "Bearer " + token);
+        httpPost.setEntity(params);
 
         HttpResponse response = client.execute(httpPost);
-        return (JSONObject) js.parse(new BasicResponseHandler().handleResponse(response));
     }
 }

@@ -14,7 +14,6 @@ import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -61,7 +60,6 @@ public class AuctionDescriptionResource {
      */
     @GET
     @Path("/{auctionId}")
-    @RolesAllowed("user")
     public Response getFull(@PathParam("auctionId") String auctionId) {
         AuctionDescription auction = repository.getAuctionDescription(auctionId);
         if (auction != null)
@@ -89,7 +87,6 @@ public class AuctionDescriptionResource {
      * @return What is stored as auction description
      */
     @POST
-    @RolesAllowed("user")
     public Response add(AuctionDescriptionPostRequest desc) {
         System.out.println("name:" + jwt.getName() + ". id: " + desc.getSellerId());
         if(!desc.getSellerId().equals(jwt.getName()))

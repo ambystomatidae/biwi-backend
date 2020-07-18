@@ -9,7 +9,6 @@ import org.biwi.rest.messaging.*;
 import org.biwi.rest.*;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -42,7 +41,6 @@ public class AuctionsActiveResource {
 
     @GET
     @Path("/{id}")
-    @RolesAllowed("user")
     public Response getByID(@PathParam("id") String id) {
         AuctionsActive a = auctActiveRepository.findById(id);
         if (a != null) {
@@ -118,7 +116,6 @@ public class AuctionsActiveResource {
     @POST
     @Path("/bid/{id}")
     @Transactional
-    @RolesAllowed("user")
     public Response addBid(@PathParam("id") String id, Bid b) {
         AuctionsActive aa = auctActiveRepository.validateBid(id, b.getValue());
 

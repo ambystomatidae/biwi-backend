@@ -3,7 +3,6 @@ package org.biwi;
 import org.biwi.models.Category;
 import org.biwi.repositories.CategoryRepository;
 
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -37,7 +36,6 @@ public class CategoryResource {
     @POST
     @Path("/")
     @Transactional
-    @RolesAllowed("admin")
     public Response add(Category category) {
         if (category.getName() != null) {
             Category c = repository.findByName(category.getName());
@@ -55,7 +53,6 @@ public class CategoryResource {
     @PUT
     @Transactional
     @Path("/{id}")
-    @RolesAllowed("admin")
     public Response update(@PathParam("id") Integer id, Category category) {
         Category c = repository.findById(id);
 
@@ -74,7 +71,6 @@ public class CategoryResource {
     @DELETE
     @Path("/{id}")
     @Transactional
-    @RolesAllowed("admin")
     public void delete(@PathParam("id") Integer id) {
         repository.deleteById(id);
     }
