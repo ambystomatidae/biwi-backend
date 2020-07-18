@@ -155,12 +155,9 @@ public class UserResource {
     @POST
     @Transactional
     @Path("user/review/{userId}")
-    public Response addReview(@PathParam("userId") String userId, Score score) throws ParseException, IOException, AuthenticationException {
+    public Response addReview(@PathParam("userId") String userId, Score score) {
         if (!score.isValid())
             return Response.status(400).build();
-
-        if (!requestsHandler.isValidReview(accessToken.getName(), userId, score.auctionId))
-            return Response.status(403).build();
 
         BiwiUser persistedUser = userRepository.findById(userId);
 

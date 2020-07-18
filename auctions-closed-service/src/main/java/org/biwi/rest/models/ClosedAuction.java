@@ -16,6 +16,8 @@ public class ClosedAuction extends PanacheEntityBase {
     public String winnerId;
     public String sellerId;
     public double topBid;
+    public double sellerRating;
+    public double winnerRating;
 
     public ClosedAuction() {
     }
@@ -34,6 +36,16 @@ public class ClosedAuction extends PanacheEntityBase {
         this.topBid = (!bids.isEmpty()) ? bids.first().value : 0;
     }
 
+    public boolean isValidReview(String userId1, String userId2){
+        return (winnerId.equals(userId1) && sellerId.equals(userId2)) || ((winnerId.equals(userId2) && sellerId.equals(userId1)));
+    }
+
+    public void addReview(String reviewerId, Score score){
+        if(winnerId.equals(reviewerId) && sellerId.equals(score.userId))
+            this.sellerRating = score.rating;
+        else if ((winnerId.equals(score.userId) && sellerId.equals(reviewerId)))
+            this.winnerRating = score.rating;
+    }
 
     @Override
     public String toString() {

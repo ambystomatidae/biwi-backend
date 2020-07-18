@@ -1,7 +1,9 @@
 package org.biwi.rest.resources;
 
 import org.biwi.rest.models.ClosedAuction;
+import org.biwi.rest.models.Score;
 import org.biwi.rest.repositories.ClosedAuctionsRepository;
+import org.biwi.rest.util.RequestsHandler;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import javax.inject.Inject;
@@ -9,6 +11,7 @@ import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.List;
 
 @Path("/v1")
@@ -21,6 +24,8 @@ public class ClosedAuctionsResource {
 
     @Inject
     JsonWebToken accessToken;
+
+    RequestsHandler requestsHandler = RequestsHandler.getInstance();
 
     // Método de teste. Eliminar depois
     @POST
@@ -61,4 +66,28 @@ public class ClosedAuctionsResource {
     public List<ClosedAuction> getUserAuctionsById(@PathParam("userId") String userId) {
         return closedAuctionsRepository.listUserAuctions(userId);
     }
+
+    @POST
+    @Transactional
+    @Path("/review/{auctionId}")
+    public Response addReview(@PathParam("auctionId") String auctionId, Score score) throws IOException {
+        if (!score.isValid())
+            return Response.status(400).build();
+
+        ClosedAuction auction = closedAuctionsRepository.findById(auctionId);
+
+        if (auction == null)
+            return Response.status(404).build();
+        
+        if(!auction.isValidReview(accessToken.getName(), score.userId))
+            return Response.status(403).build();
+
+        score.auctionId = auctionId;
+
+        requestsHandler.addToUserScore(score, accessToken.getName());
+        auction.addReview(accessToken.getName(), score);
+
+        return Response.ok().build();
+    }
+
 }

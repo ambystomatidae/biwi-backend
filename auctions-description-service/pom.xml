@@ -80,6 +80,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-mutiny</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc</artifactId>
+    </dependency>
     <!-- Context Propagation extension -->
     <dependency>
       <groupId>io.quarkus</groupId>
