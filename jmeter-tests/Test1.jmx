@@ -173,7 +173,7 @@
           </HeaderManager>
           <hashTree/>
           <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="Create Auction Controller" enabled="true">
-            <intProp name="ThroughputController.style">1</intProp>
+            <intProp name="ThroughputController.style">0</intProp>
             <boolProp name="ThroughputController.perThread">false</boolProp>
             <intProp name="ThroughputController.maxThroughput">1</intProp>
             <FloatProperty>
