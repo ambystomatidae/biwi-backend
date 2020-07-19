@@ -120,7 +120,7 @@ public class RequestsHandler {
     }
 
 
-    public boolean isActiveAuction(Auction auction) throws IOException, ParseException, AuthenticationException {
+    public boolean isActiveAuction(Auction auction) throws IOException {
         HttpClient client = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(activeAuctionsServiceUrl + "/" + activeAuctionsGetPath + "/" + auction.auctionId);
 
@@ -132,7 +132,7 @@ public class RequestsHandler {
         return false;
     }
 
-    public boolean isValidReview(String reviewerId, String reviewdId, String auctionId) throws ParseException, IOException, AuthenticationException {
+    public boolean isValidReview(String reviewerId, String reviewdId, String auctionId) throws ParseException, IOException {
         HttpClient client = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(closedAuctionsServiceUrl + "/" + closedAuctionsGetPath + "/" + auctionId);
 
