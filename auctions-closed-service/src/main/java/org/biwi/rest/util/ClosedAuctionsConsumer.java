@@ -50,7 +50,7 @@ public class ClosedAuctionsConsumer implements Runnable {
                 Message message = consumer.receive();
                 if (message == null) return;
                 String auctionId = message.getBody(String.class);
-                ClosedAuction auction = new ClosedAuction(auctionId, requestsHandler.getAuctionData(auctionId));
+                ClosedAuction auction = new ClosedAuction(auctionId, requestsHandler.getAuctionName(auctionId), requestsHandler.getAuctionData(auctionId));
                 closedAuctionsRepository.persistAuction(auction);
                 requestsHandler.removeAuction(auction.id);
             }
