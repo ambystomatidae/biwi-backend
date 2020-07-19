@@ -43,16 +43,12 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
     }
 
 
-    public AuctionsActive validateBid(String id, double value){
+    public boolean validateBid(AuctionsActive aa, double value){
 
-        AuctionsActive aa=this.findById(id);
-        if(aa!=null){
-            if (Double.compare(aa.getLastBidValue(), value)  >= 0 ){
-                return null;
-            }
-            return aa;
+        if (Double.compare(aa.getLastBidValue(), value)  >= 0 ){
+            return false;
         }
-        return null;
+        return true;
     }
 
 

@@ -117,11 +117,15 @@ public class AuctionsActiveResource {
     @Path("/bid/{id}")
     @Transactional
     public Response addBid(@PathParam("id") String id, Bid b) {
-        AuctionsActive aa = auctActiveRepository.validateBid(id, b.getValue());
-
+        AuctionsActive aa = auctActiveRepository.findById(id);
         if (aa == null)
             return Response.status(404).build();
 
+        if(!auctActiveRepository.validateBid(aa,b.getValue())){
+            Bid bid = new Bid();
+            bid.setValue(aa.getLastBidValue()+1);
+            return Response.ok(bid).status(403).build();
+        }
         if (aa.isOpen() || jwt.getName().equals(b.getIdUser())) {
             Bid bid = new Bid(b.getIdUser(), b.getValue());
             bid.persist();
