@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 public class Auction extends PanacheEntity {
 
     public String auctionId;
+    public String auctionName;
+    public String mainImage;
 
     public Auction() {
     }
@@ -17,7 +19,7 @@ public class Auction extends PanacheEntity {
     }
 
     public boolean isValid() {
-        return auctionId != null;
+        return auctionId != null && auctionName != null && mainImage != null ;
     }
 
     @Override
