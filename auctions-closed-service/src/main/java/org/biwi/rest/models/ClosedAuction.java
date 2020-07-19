@@ -13,6 +13,7 @@ public class ClosedAuction extends PanacheEntityBase {
 
     @Id
     public String id;
+    public String name;
     public String winnerId;
     public String sellerId;
     public double topBid;
@@ -22,8 +23,9 @@ public class ClosedAuction extends PanacheEntityBase {
     public ClosedAuction() {
     }
 
-    public ClosedAuction(String auctionId, JSONObject json) {
+    public ClosedAuction(String auctionId, String name, JSONObject json) {
         this.id = auctionId;
+        this.name = name;
         this.sellerId = (String) json.get("sellerId");
         TreeSet<Bid> bids = new TreeSet<>((b1, b2) -> (int) (b2.value - b1.value));
         JSONArray bidsArray = (JSONArray) json.get("bids");

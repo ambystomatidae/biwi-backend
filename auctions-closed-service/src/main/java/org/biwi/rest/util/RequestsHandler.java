@@ -31,6 +31,8 @@ public class RequestsHandler {
         return single_instance;
     }
 
+    String descriptionServiceUrl = ConfigProvider.getConfig().getValue("description.service.url", String.class);
+
     String activeAuctionsServiceUrl = ConfigProvider.getConfig().getValue("active-auctions.service.url", String.class);
 
     String userServiceUrl = ConfigProvider.getConfig().getValue("user.service.url", String.class);
@@ -52,6 +54,18 @@ public class RequestsHandler {
         JSONParser js = new JSONParser();
 
         return (JSONObject) js.parse(response);
+    }
+
+    public String getAuctionName(String auctionId) throws IOException, ParseException {
+        HttpClient client = HttpClients.createDefault();
+        HttpDelete deleteFromActive = new HttpDelete(descriptionServiceUrl + "/" + auctionId + "/short");
+
+        HttpResponse httpResponse = client.execute(deleteFromActive);
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        JSONParser js = new JSONParser();
+
+        return (String) ((JSONObject) js.parse(response)).get("name");
     }
 
     public void removeAuction(String auctionId) throws IOException {
