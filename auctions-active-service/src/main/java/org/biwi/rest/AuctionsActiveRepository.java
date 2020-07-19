@@ -87,9 +87,4 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
         auc.setOpen(status);
         return status;
     }
-
-
-
-
-
 }
