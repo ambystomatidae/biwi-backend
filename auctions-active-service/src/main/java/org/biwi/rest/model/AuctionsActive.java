@@ -129,7 +129,6 @@ public class AuctionsActive extends PanacheEntityBase {
         LocalTime t= this.duration;
         LocalDateTime nw= LocalDateTime.now().plusHours(1);
         LocalDateTime end= nw.plusHours(t.getHour()).plusMinutes(t.getMinute()).plusSeconds(t.getSecond()).plusNanos(t.getNano());
-        System.out.println(end);
         return end;
     }
 }

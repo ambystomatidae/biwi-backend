@@ -45,9 +45,7 @@ public class ActivateAuctionConsumer implements Runnable {
             JMSConsumer consumer = context.createConsumer(context.createQueue("activateAuction"));
             while (true) {
                 Message message = consumer.receive();
-                System.out.println("I got a message! " + message.toString());
                 if (message == null) {
-                    System.out.println("é nulo!");
                     return;
                 }
                 ObjectMessage om = (ObjectMessage) message;
