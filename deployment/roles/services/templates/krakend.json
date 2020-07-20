@@ -3,8 +3,8 @@
   "extra_config": {
     "github_com/devopsfaith/krakend-cors": {
       "allow_origins": [
-        "http://localhost:8080/",
-        "http*"
+        "http://localhost:8080",
+        "*"
       ],
       "expose_headers": [
         "Content-Length"
@@ -34,7 +34,7 @@
       "concurrent_calls": 1,
       "backend": [
         {
-          "url_pattern": "/v1/soon",
+          "url_pattern": "/v1/all",
           "encoding": "json",
           "sd": "static",
           "extra_config": {},
@@ -42,10 +42,15 @@
           "host": [
             "http://auctions-scheduled:8080"
           ],
-          "disable_host_sanitize": false
+          "disable_host_sanitize": false,
+          "is_collection": false,
+          "target": "",
+          "mapping": {
+            "auctions": "soon"
+          }
         },
         {
-          "url_pattern": "/v1/hotpicks",
+          "url_pattern": "/active/hotpicks",
           "encoding": "json",
           "sd": "static",
           "extra_config": {},
@@ -53,7 +58,12 @@
           "host": [
             "http://auctions-active:8080"
           ],
-          "disable_host_sanitize": false
+          "disable_host_sanitize": false,
+          "is_collection": false,
+          "target": "",
+          "mapping": {
+            "auctions": "hotpicks"
+          }
         }
       ]
     },
@@ -89,7 +99,7 @@
     {
       "endpoint": "/signup",
       "method": "POST",
-      "extra_config": { },
+      "extra_config": {},
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
@@ -139,10 +149,13 @@
             "viewUsers"
           ],
           "roles_key": "realm_access.roles",
-          "audience": ["realm-management", "account"],
+          "audience": [
+            "realm-management",
+            "account"
+          ],
           "issuer": "http://keycloak:8080/auth/realms/biwi"
         }
-      },      
+      },
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
@@ -168,6 +181,9 @@
           ],
           "disable_host_sanitize": false
         }
+      ],
+      "headers_to_pass": [
+        "*"
       ]
     },
     {
@@ -183,10 +199,13 @@
             "viewUsers"
           ],
           "roles_key": "realm_access.roles",
-          "audience": ["realm-management", "account"],
+          "audience": [
+            "realm-management",
+            "account"
+          ],
           "issuer": "http://keycloak:8080/auth/realms/biwi"
         }
-      },      
+      },
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
@@ -201,6 +220,9 @@
           ],
           "disable_host_sanitize": false
         }
+      ],
+      "headers_to_pass": [
+        "*"
       ]
     },
     {
@@ -216,10 +238,13 @@
             "viewUsers"
           ],
           "roles_key": "realm_access.roles",
-          "audience": ["realm-management", "account"],
+          "audience": [
+            "realm-management",
+            "account"
+          ],
           "issuer": "http://keycloak:8080/auth/realms/biwi"
         }
-      },      
+      },
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
@@ -228,25 +253,20 @@
           "encoding": "json",
           "sd": "static",
           "method": "GET",
-          "extra_config": {
-            "github.com/devopsfaith/krakend-jose/validator": {
-              "alg": "RS256",
-              "jwk-url": "http://keycloak:8080/auth/realms/biwi/protocol/openid-connect/certs",
-              "disable_jwk_security": true,
-              "roles": [
-                "user",
-                "viewUsers"
-              ],
-              "roles_key": "realm_access.roles",
-              "audience": ["realm-management", "account"],
-              "issuer": "http://keycloak:8080/auth/realms/biwi"
-            }
-          },          
+          "extra_config": {},
           "host": [
             "http://user:8080"
           ],
-          "disable_host_sanitize": false
+          "disable_host_sanitize": false,
+          "is_collection": true,
+          "target": "",
+          "mapping": {
+            "collection": "watchlist"
+          }
         }
+      ],
+      "headers_to_pass": [
+        "*"
       ]
     },
     {
@@ -262,10 +282,13 @@
             "viewUsers"
           ],
           "roles_key": "realm_access.roles",
-          "audience": ["realm-management", "account"],
+          "audience": [
+            "realm-management",
+            "account"
+          ],
           "issuer": "http://keycloak:8080/auth/realms/biwi"
         }
-      },      
+      },
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
@@ -280,6 +303,9 @@
           ],
           "disable_host_sanitize": false
         }
+      ],
+      "headers_to_pass": [
+        "*"
       ]
     },
     {
@@ -296,7 +322,10 @@
             "viewUsers"
           ],
           "roles_key": "realm_access.roles",
-          "audience": ["realm-management", "account"],
+          "audience": [
+            "realm-management",
+            "account"
+          ],
           "issuer": "http://keycloak:8080/auth/realms/biwi"
         }
       },
@@ -312,6 +341,9 @@
           ],
           "disable_host_sanitize": false
         }
+      ],
+      "headers_to_pass": [
+        "*"
       ]
     },
     {
@@ -322,11 +354,7 @@
       "concurrent_calls": 1,
       "querystring_params": [
         "page",
-        "categories",
-        "pageSize",
-        "lowerPrice",
-        "higherPrice",
-        "sortBy"
+        "pageSize"
       ],
       "backend": [
         {
@@ -413,10 +441,13 @@
             "viewUsers"
           ],
           "roles_key": "realm_access.roles",
-          "audience": ["realm-management", "account"],
+          "audience": [
+            "realm-management",
+            "account"
+          ],
           "issuer": "http://keycloak:8080/auth/realms/biwi"
         }
-      },      
+      },
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
@@ -431,6 +462,9 @@
             "http://auctions-description:8080"
           ]
         }
+      ],
+      "headers_to_pass": [
+        "*"
       ]
     },
     {
@@ -449,7 +483,10 @@
             "viewUsers"
           ],
           "roles_key": "realm_access.roles",
-          "audience": ["realm-management", "account"],
+          "audience": [
+            "realm-management",
+            "account"
+          ],
           "issuer": "http://keycloak:8080/auth/realms/biwi"
         }
       },
@@ -479,7 +516,9 @@
           "disable_host_sanitize": false
         }
       ],
-      "headers_to_pass": []
+      "headers_to_pass": [
+        "*"
+      ]
     },
     {
       "endpoint": "/auction/{id}",
@@ -494,10 +533,13 @@
             "viewUsers"
           ],
           "roles_key": "realm_access.roles",
-          "audience": ["realm-management", "account"],
+          "audience": [
+            "realm-management",
+            "account"
+          ],
           "issuer": "http://keycloak:8080/auth/realms/biwi"
         }
-      },      
+      },
       "output_encoding": "json",
       "concurrent_calls": 1,
       "backend": [
@@ -512,6 +554,9 @@
           ],
           "disable_host_sanitize": false
         }
+      ],
+      "headers_to_pass": [
+        "*"
       ]
     }
   ]
