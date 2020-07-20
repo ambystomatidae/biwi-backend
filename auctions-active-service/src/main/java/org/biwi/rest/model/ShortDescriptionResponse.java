@@ -1,6 +1,7 @@
 package org.biwi.rest.model;
 
 import javax.json.bind.annotation.JsonbProperty;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShortDescriptionResponse {
@@ -18,6 +19,7 @@ public class ShortDescriptionResponse {
     }
 
     public ShortDescriptionResponse() {
+        this.shortDespcriptions = new ArrayList<>();
     }
 
     public List<ShortDescription> getAuctions() {
