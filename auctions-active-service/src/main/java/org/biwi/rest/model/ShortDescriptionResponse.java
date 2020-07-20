@@ -17,6 +17,9 @@ public class ShortDescriptionResponse {
         this.total = total;
     }
 
+    public ShortDescriptionResponse() {
+    }
+
     public List<ShortDescription> getAuctions() {
         return shortDespcriptions;
     }

@@ -32,6 +32,9 @@ public class AuctionsActiveResource {
     AuctionBidProducer auctionBid;
 
     @Inject
+    PrepareToCloseProducer prepareToCloseProducer;
+
+    @Inject
     @RestClient
     ShortDescriptionService shortDescriptionService;
 
@@ -70,7 +73,7 @@ public class AuctionsActiveResource {
                 ShortDescriptionResponse response= new ShortDescriptionResponse(result,query.pageCount(),query.count());
                 return Response.ok(response).build();
             }
-            List<ShortDescription> sd = new ArrayList<>();
+            ShortDescriptionResponse sd = new ShortDescriptionResponse();
             return Response.ok(sd).build();
         }
         return Response.status(400).build();
@@ -94,7 +97,7 @@ public class AuctionsActiveResource {
                 ShortDescriptionResponse response= new ShortDescriptionResponse(result,query.pageCount(),query.count());
                 return Response.ok(response).build();
             }
-            List<ShortDescription> sd = new ArrayList<>();
+            ShortDescriptionResponse sd = new ShortDescriptionResponse();
             return Response.ok(sd).build();
         }
         return Response.status(400).build();
@@ -104,10 +107,12 @@ public class AuctionsActiveResource {
     @POST
     @Transactional
     public boolean addAuction(AuctionsActive auctionsActive) {
-        AuctionsActive auction = new AuctionsActive(auctionsActive.getId(), LocalTime.parse("00:30:00"), auctionsActive.getStartingPrice(), auctionsActive.getReservePrice(), auctionsActive.getSellerId());
+        AuctionsActive auction = new AuctionsActive(auctionsActive.getId(), LocalTime.parse("00:01:00"), auctionsActive.getStartingPrice(), auctionsActive.getReservePrice(), auctionsActive.getSellerId());
         auctActiveRepository.persist(auction);
         if (auctActiveRepository.isPersistent(auction)) {
             auctionBid.initiate(auction.getId(), auction.getStartingPrice());
+            prepareToCloseProducer.produce(auction.getId(), auction.getEndTimeAuction());
+            System.out.println(auction.getEndTimeAuction());
             return true;
         }
         return false;
