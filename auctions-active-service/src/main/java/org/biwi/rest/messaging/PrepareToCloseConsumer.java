@@ -49,11 +49,13 @@ public class PrepareToCloseConsumer implements Runnable {
                 Message message = consumer.receive();
                 if (message == null) return;
                 String id = message.getBody(String.class);
-                aaRepository.setOpen(id, false);
-                closeActionProducer.produce(id);
+                if(id!=null){
+                    aaRepository.setOpen(id, false);
+                    closeActionProducer.produce(id);
+                }
             }
         } catch (JMSException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }
