@@ -18,9 +18,9 @@ public class PrepareToCloseProducer {
         try {
             JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE);
             JMSProducer jp = context.createProducer();
-            ObjectMessage om = context.createObjectMessage(id);
-            om.setLongProperty("_AMQ_SCHED_DELIVERY", getDeliveryDelay(end));
-            jp.send(context.createQueue("prepareToClose"), om);
+            TextMessage tm = context.createTextMessage(id);
+            tm.setLongProperty("_AMQ_SCHED_DELIVERY", getDeliveryDelay(end));
+            jp.send(context.createQueue("prepareToClose"), tm);
         }
         catch (Exception e) {
             e.printStackTrace();
