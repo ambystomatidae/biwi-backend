@@ -147,7 +147,9 @@ public class RequestsHandler {
         return Score.isValidReview(reviewerId, reviewdId, (String) json.get("sellerId"), (String) json.get("winnerId"));
     }
 
-    private String getUserService(String url, String token) throws IOException {
+    private String getUserService(String url) throws IOException, AuthenticationException, ParseException {
+        String token = getAdminToken();
+
         HttpClient client = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(url);
 
@@ -188,8 +190,8 @@ public class RequestsHandler {
         return adminToken.access_token;
     }
 
-    public JSONObject getUserById(String id, String token) throws IOException, ParseException {
-        String response = getUserService(userServiceUrl + "/" + id, token);
+    public JSONObject getUserById(String id) throws IOException, ParseException, AuthenticationException {
+        String response = getUserService(userServiceUrl + "/" + id);
 
         JSONParser js = new JSONParser();
 
