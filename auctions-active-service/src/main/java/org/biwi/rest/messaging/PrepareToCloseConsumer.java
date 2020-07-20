@@ -49,6 +49,7 @@ public class PrepareToCloseConsumer implements Runnable {
                 Message message = consumer.receive();
                 if (message == null) return;
                 String id = message.getBody(String.class);
+                System.out.println("O id é: "+ id);
                 if(id!=null){
                     aaRepository.setOpen(id, false);
                     closeActionProducer.produce(id);
