@@ -84,7 +84,7 @@ public class ClosedAuctionsResource {
 
         score.auctionId = auctionId;
 
-        requestsHandler.addToUserScore(score, accessToken.getName());
+        requestsHandler.addToUserScore(score);
         auction.addReview(accessToken.getName(), score);
 
         return Response.ok().build();

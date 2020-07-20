@@ -77,7 +77,7 @@ public class RequestsHandler {
     }
 
 
-    public void addToUserScore(Score score, String token) throws IOException {
+    public void addToUserScore(Score score) throws IOException {
         HttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(userServiceUrl + "/" + reviewPath + "/" + score.userId);
 
@@ -87,7 +87,6 @@ public class RequestsHandler {
 
         StringEntity params = new StringEntity(reviewData.toString());
         httpPost.addHeader("content-type", "application/json");
-        httpPost.addHeader("Authorization", "Bearer " + token);
         httpPost.setEntity(params);
 
         HttpResponse response = client.execute(httpPost);
