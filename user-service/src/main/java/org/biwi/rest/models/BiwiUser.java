@@ -59,6 +59,7 @@ public class BiwiUser extends PanacheEntityBase {
         this.scores.removeIf(score1 -> score.auctionId == score1.auctionId);
         this.scores.add(score);
         this.currentRating = scores.stream().mapToDouble(s -> s.rating).sum() / scores.size();
+        this.ratingsCounter = this.scores.size();
     }
 
     public void addKeycloakInfo(JSONObject keycloakUser) {
