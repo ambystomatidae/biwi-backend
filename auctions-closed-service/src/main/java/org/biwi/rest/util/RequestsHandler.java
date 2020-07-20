@@ -3,6 +3,7 @@ package org.biwi.rest.util;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
@@ -58,9 +59,9 @@ public class RequestsHandler {
 
     public String getAuctionName(String auctionId) throws IOException, ParseException {
         HttpClient client = HttpClients.createDefault();
-        HttpDelete deleteFromActive = new HttpDelete(descriptionServiceUrl + "/" + auctionId + "/short");
+        HttpGet getName = new HttpGet(descriptionServiceUrl + "/" + auctionId + "/short");
 
-        HttpResponse httpResponse = client.execute(deleteFromActive);
+        HttpResponse httpResponse = client.execute(getName);
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
         JSONParser js = new JSONParser();
