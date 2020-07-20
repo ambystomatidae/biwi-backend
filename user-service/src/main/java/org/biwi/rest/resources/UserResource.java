@@ -87,20 +87,19 @@ public class UserResource {
 
     @GET
     @Path("/user")
-    public Response getCurrentUser() throws IOException, ParseException {
+    public Response getCurrentUser() throws IOException, ParseException, AuthenticationException {
         return getUserById(accessToken.getName());
     }
 
     @GET
     @Path("/user/{userId}")
-    public Response getUserById(@PathParam("userId") String userId) throws IOException, ParseException {
-        String token = accessToken.getRawToken();
+    public Response getUserById(@PathParam("userId") String userId) throws IOException, ParseException, AuthenticationException {
         BiwiUser user = userRepository.findById(userId);
 
         if (user == null)
             return Response.status(404).build();
 
-        JSONObject keycloakUser = requestsHandler.getUserById(userId, token);
+        JSONObject keycloakUser = requestsHandler.getUserById(userId);
         user.addKeycloakInfo(keycloakUser);
 
         return Response.ok(user).build();
@@ -198,8 +197,6 @@ public class UserResource {
             this.username = identity.getPrincipal().getName();
         }
     }
-
-
 
     /*
     @POST

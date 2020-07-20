@@ -68,11 +68,6 @@
       <artifactId>google-cloud-storage</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.microprofile.jwt</groupId>
-      <artifactId>microprofile-jwt-auth-api</artifactId>
-      <version>1.1.1</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
     </dependency>
