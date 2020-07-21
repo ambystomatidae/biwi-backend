@@ -131,7 +131,7 @@ public class AuctionsActiveResource {
             bid.setValue(aa.getLastBidValue()+1);
             return Response.ok(bid).status(403).build();
         }
-        if (aa.isOpen() || jwt.getName().equals(b.getIdUser())) {
+        if (aa.isOpen() && jwt.getName().equals(b.getIdUser())) {
             Bid bid = new Bid(b.getIdUser(), b.getValue());
             bid.persist();
             boolean status = auctActiveRepository.addBid(aa, bid);

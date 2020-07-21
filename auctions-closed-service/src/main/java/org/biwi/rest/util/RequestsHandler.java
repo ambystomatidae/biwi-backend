@@ -57,7 +57,7 @@ public class RequestsHandler {
         return (JSONObject) js.parse(response);
     }
 
-    public String getAuctionName(String auctionId) throws IOException, ParseException {
+    public JSONObject getAuctionDescription(String auctionId) throws IOException, ParseException {
         HttpClient client = HttpClients.createDefault();
         HttpGet getName = new HttpGet(descriptionServiceUrl + "/" + auctionId + "/short");
 
@@ -66,7 +66,7 @@ public class RequestsHandler {
         String response = new BasicResponseHandler().handleResponse(httpResponse);
         JSONParser js = new JSONParser();
 
-        return (String) ((JSONObject) js.parse(response)).get("name");
+        return (JSONObject) js.parse(response);
     }
 
     public void removeAuction(String auctionId) throws IOException {
