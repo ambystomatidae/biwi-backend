@@ -25,7 +25,7 @@ public class AuctionsActiveRepository implements PanacheRepository<AuctionsActiv
 
     public  PanacheQuery<AuctionsActive> getAll(Filter filter, String sortBy, boolean hotpick) {
         PanacheQuery<AuctionsActive> query;
-        LocalDateTime limit = LocalDateTime.now().plusHours(1).minusMinutes(10);
+        LocalDateTime limit = LocalDateTime.now().plusHours(1).minusHours(2);
         if (filter != null && filter.byPrice()) {
             double lower = filter.getLowerPrice() != null ? filter.getLowerPrice() : 0;
             double higher = filter.getHigherPrice() != null ? filter.getHigherPrice() : Double.MAX_VALUE;
